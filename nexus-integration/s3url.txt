@@ -9,7 +9,6 @@ s3://flint-dev-seankao/checkpoints/cloudtrail/
 
 
 
-
 s3://nexus-flint-integration/vpclog/
 s3://nexus-flint-integration/checkpoints/vpc
 
@@ -18,3 +17,7 @@ s3://nexus-flint-integration/checkpoints/waf
 
 s3://nexus-flint-integration/cloudtraillog/
 s3://nexus-flint-integration/checkpoints/cloudtrail
+
+
+s3://nexus-flint-integration/loggroup_vpc/
+s3://nexus-flint-integration/checkpoints/loggroup_vpc_1003

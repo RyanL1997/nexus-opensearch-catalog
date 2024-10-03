@@ -11,11 +11,10 @@ index                                              store.size
 flint_flinttest1_default_original_opensearch_mview    185.8kb
 ```
 - Created a VPC MV with aggregation
-- Here is the size calculation of the above MV (`flint_flinttest1_default_vpc_mv_agg_3`) with aggregation
+- Here is the size calculation of the above MV (`flint_flinttest1_default_vpc_mv_agg_4_manual_refresh`) with aggregation
 ```
-GET _cat/indices/flint_flinttest1_default_vpc_mv_agg_3?v&h=index,store.size
-
+GET _cat/indices/flint_flinttest1_default_vpc_mv_agg_4_manual_refresh?v&h=index,store.size
 
 index                                 store.size
-flint_flinttest1_default_vpc_mv_agg_3     89.9kb
+flint_flinttest1_default_vpc_mv_agg_4_manual_refresh     103.5kb
 ```
