@@ -14,9 +14,9 @@ CREATE EXTERNAL TABLE IF NOT EXISTS {table_name} (
     action string,
     logStatus string
 )
-ROW FORMAT DELIMITED
-FIELDS TERMINATED BY ' '
+USING csv
 OPTIONS (
+  sep=' ',
   recursiveFileLookup='true'
 )
 LOCATION '{s3_bucket_location}'
