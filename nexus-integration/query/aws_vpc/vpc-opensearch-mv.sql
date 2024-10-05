@@ -1,4 +1,4 @@
-CREATE MATERIALIZED VIEW original_opensearch_mview AS
+CREATE MATERIALIZED VIEW {materialized_view_name} AS
   SELECT
     CAST(IFNULL(srcPort, 0) AS LONG) AS `aws.vpc.srcport`,
     CAST(IFNULL(srcAddr, '0.0.0.0') AS STRING)  AS `aws.vpc.srcaddr`,
@@ -16,11 +16,11 @@ CREATE MATERIALIZED VIEW original_opensearch_mview AS
     CAST(IFNULL(accountId, 'Unknown') AS STRING) AS `aws.vpc.account-id`
 
   FROM
-    aws_vpc
+    {table_name}
 WITH (
   auto_refresh = true,
   refresh_interval = '15 Minute',
-  checkpoint_location = 's3://nexus-flint-integration/checkpoints/vpc_original_opensearch_mview',
+  checkpoint_location = '{s3_checkpoint_location}',
   watermark_delay = '1 Minute',
-  extra_options = '{ "aws_vpc": { "maxFilesPerTrigger": "10" }}'
+  extra_options = '{ "{table_name}": { "maxFilesPerTrigger": "10" }}'
 )

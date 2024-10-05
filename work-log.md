@@ -1,5 +1,9 @@
 # WORK LOG
 
+This work log is intended to document the progress and experiments related to resolving the index aggregation issue in OpenSearch Zero-ETL integration. The primary goal is to enhance query efficiency when integrating with AWS CloudWatch Log Group data.  
+
+**Please note that this document is for my personal usage only.*
+
 ## 10/03/2024
 
 ### VPC
@@ -22,10 +26,9 @@ flint_flinttest1_default_original_opensearch_mview    185.8kb
 ```bash
 GET _cat/indices/flint_flinttest1_default_vpc_mv_agg_4_manual_refresh?v&h=index,store.size
 
-index                                 store.size
-flint_flinttest1_default_vpc_mv_agg_4_manual_refresh     103.5kb
+index                                                store.size
+flint_flinttest1_default_vpc_mv_agg_4_manual_refresh    103.5kb
 ```
-
 
 ## 10/04/2024
 
@@ -59,6 +62,45 @@ flint_flinttest1_default_vpc_mv_agg_4_manual_refresh     103.5kb
   LOCATION 's3://nexus-flint-integration/loggroup_vpc/'
   ```
 
+- Re-create the full-log MV aith auto refresh
+
+  ```sql
+  CREATE MATERIALIZED VIEW vpc_full_log_mview_10000 AS
+  SELECT
+    CAST(IFNULL(srcPort, 0) AS LONG) AS `aws.vpc.srcport`,
+    CAST(IFNULL(srcAddr, '0.0.0.0') AS STRING)  AS `aws.vpc.srcaddr`,
+    CAST(IFNULL(interfaceId, 'Unknown') AS STRING)  AS `aws.vpc.src-interface_uid`,
+    CAST(IFNULL(dstPort, 0) AS LONG) AS `aws.vpc.dstport`,
+    CAST(IFNULL(dstAddr, '0.0.0.0') AS STRING)  AS `aws.vpc.dstaddr`,
+    CAST(IFNULL(packets, 0) AS LONG) AS `aws.vpc.packets`,
+    CAST(IFNULL(bytes, 0) AS LONG) AS `aws.vpc.bytes`,
+    CAST(FROM_UNIXTIME(start ) AS TIMESTAMP) AS `@timestamp`,
+    CAST(FROM_UNIXTIME(start ) AS TIMESTAMP) AS `start_time`,
+    CAST(FROM_UNIXTIME(start ) AS TIMESTAMP) AS `interval_start_time`,
+    CAST(FROM_UNIXTIME(`end` ) AS TIMESTAMP) AS `end_time`,
+    CAST(IFNULL(logStatus, 'Unknown') AS STRING)  AS `aws.vpc.status_code`,
+    CAST(IFNULL(action, 'Unknown') AS STRING) AS `aws.vpc.action`,
+    CAST(IFNULL(accountId, 'Unknown') AS STRING) AS `aws.vpc.account-id`
+
+  FROM
+    aws_vpc_loggroup10000rows
+  WITH (
+    auto_refresh = true,
+    refresh_interval = '15 Minute',
+    checkpoint_location = 's3://nexus-flint-integration/checkpoints/vpc_full_log_mview_10000',
+    watermark_delay = '1 Minute',
+    extra_options = '{ "aws_vpc_loggroup10000rows": { "maxFilesPerTrigger": "10" }}'
+  )
+  ```
+- Once the data gets populated into the above index, we check the size
+
+  ```bash
+  GET _cat/indices/flint_flinttest1_default_vpc_full_log_mview_10000?v&h=index,store.size
+
+  index                                             store.size
+  flint_flinttest1_default_vpc_full_log_mview_10000        4mb
+  ```
+
 - Re-create the aggregated MV with manual refresh - the reason of doing manual refresh for testing is because the water mark delay is causing issues, so that, currently, we will do the manual refresh for testing only
 
   ```sql
@@ -81,7 +123,7 @@ flint_flinttest1_default_vpc_mv_agg_4_manual_refresh     103.5kb
         packets,
         CAST(FROM_UNIXTIME(start) AS TIMESTAMP) AS `@timestamp`
       FROM
-        aws_vpc
+        aws_vpc_loggroup10000rows
     )
   GROUP BY
     TUMBLE(`@timestamp`, '1 Minute'),
@@ -266,3 +308,14 @@ flint_flinttest1_default_vpc_mv_agg_4_manual_refresh     103.5kb
     }
   }
   ```
+
+- Once the data gets populated, we calculate the size again
+
+  ```bash
+  GET _cat/indices/flint_flinttest1_default_vpc_mv_10000_100424_agg?v&h=index,store.size
+
+  index                                            store.size
+  flint_flinttest1_default_vpc_mv_10000_100424_agg    226.1kb
+  ```
+
+- Check the dashboards to make sure the query correctness, and come to the conclusion that the VPC MV index size has a significant reduction for aggregated query: `4 MB > 226.1 KB`.

@@ -28,5 +28,5 @@ WITH (
   auto_refresh = true,
   refresh_interval = '15 Minute',
   watermark_delay = '1 Minute',
-  checkpoint_location = '{checkpoint_location}'
+  checkpoint_location = '{s3_checkpoint_location}'
 )
