@@ -1,6 +1,6 @@
 # S3 LOCATION FOR SANITY TESTING
 
-## FLINT GA TESTING - DEVELOPMENT
+### FLINT GA TESTING - DEVELOPMENT
 
 - s3://flint-dataset/waf_sept/  
   s3://flint-dev-seankao/checkpoints/waf_sept_${unique_id}/
