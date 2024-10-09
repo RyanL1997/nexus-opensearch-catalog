@@ -325,7 +325,7 @@ flint_flinttest1_default_vpc_mv_agg_4_manual_refresh    103.5kb
 
 ### VPC
 
-Instead of fetch the entire dataset for MV setup, considering adding a `WHERE` section for the MV creation query, so that we can enhance the improvement of the doc size of the MV index. Sample query:
+- Instead of fetch the entire dataset for MV setup, considering adding a `WHERE` section for the MV creation query, so that we can enhance the improvement of the doc size of the MV index. Sample query:
 
 ```sql
 CREATE MATERIALIZED VIEW aws_vpc_20k_oct7_mv AS
