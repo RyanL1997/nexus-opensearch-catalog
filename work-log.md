@@ -319,3 +319,41 @@ flint_flinttest1_default_vpc_mv_agg_4_manual_refresh    103.5kb
   ```
 
 - Check the dashboards to make sure the query correctness, and come to the conclusion that the VPC MV index size has a significant reduction for aggregated query: `4 MB > 226.1 KB`.
+
+
+## 10/08/2024
+
+### VPC
+
+Instead of fetch the entire dataset for MV setup, considering adding a `WHERE` section for the MV creation query, so that we can enhance the improvement of the doc size of the MV index. Sample query:
+
+```sql
+CREATE MATERIALIZED VIEW aws_vpc_20k_oct7_mv AS
+  SELECT
+    CAST(IFNULL(srcPort, 0) AS LONG) AS `aws.vpc.srcport`,
+    CAST(IFNULL(srcAddr, '0.0.0.0') AS STRING)  AS `aws.vpc.srcaddr`,
+    CAST(IFNULL(interfaceId, 'Unknown') AS STRING)  AS `aws.vpc.src-interface_uid`,
+    CAST(IFNULL(dstPort, 0) AS LONG) AS `aws.vpc.dstport`,
+    CAST(IFNULL(dstAddr, '0.0.0.0') AS STRING)  AS `aws.vpc.dstaddr`,
+    CAST(IFNULL(packets, 0) AS LONG) AS `aws.vpc.packets`,
+    CAST(IFNULL(bytes, 0) AS LONG) AS `aws.vpc.bytes`,
+    CAST(FROM_UNIXTIME(start ) AS TIMESTAMP) AS `@timestamp`,
+    CAST(FROM_UNIXTIME(start ) AS TIMESTAMP) AS `start_time`,
+    CAST(FROM_UNIXTIME(start ) AS TIMESTAMP) AS `interval_start_time`,
+    CAST(FROM_UNIXTIME(`end` ) AS TIMESTAMP) AS `end_time`,
+    CAST(IFNULL(logStatus, 'Unknown') AS STRING)  AS `aws.vpc.status_code`,
+    CAST(IFNULL(action, 'Unknown') AS STRING) AS `aws.vpc.action`,
+    CAST(IFNULL(accountId, 'Unknown') AS STRING) AS `aws.vpc.account-id`
+  FROM
+    aws_vpc_20k_oct7
+  WHERE
+    FROM_UNIXTIME(start) >= '2024-10-06 00:00:00'
+    AND FROM_UNIXTIME(start) <= CURRENT_TIMESTAMP
+WITH (
+  auto_refresh = true,
+  refresh_interval = '15 Minute',
+  checkpoint_location = 's3://nexus-flint-integration/checkpoints/loggroup_vpc_oct7_20k',
+  watermark_delay = '1 Minute',
+  extra_options = '{ "aws_vpc_20k_oct7": { "maxFilesPerTrigger": "10" }}'
+);
+```
