@@ -501,3 +501,55 @@ GROUP BY
 
 - Instead of dropping the `Filters` visualizations completely, added back the filter panel for only following fields for: `srcAddr`, `dstAddr`, and `action`
 - Updated the ndjson in this repo with the latest version of VPC panels
+
+## 10/11/2024
+
+### CloudTrail
+
+- [Continue the work in 09] Compare to the Nexus log group fields with the MV creation query of Nexus, and removed the mismatched fields
+
+```typescript
+export const getCloudTrailLogsQuery = (
+  materializedViewName: string,
+  tableName: string,
+  refreshInterval: string,
+  enableAutoRefresh: boolean,
+) => {
+  return `CREATE MATERIALIZED VIEW ${materializedViewName} AS
+            SELECT
+              \`userIdentity.type\` AS \`aws.cloudtrail.userIdentity.type\`,
+              \`userIdentity.arn\` AS \`aws.cloudtrail.userIdentity.arn\`,
+              \`userIdentity.invokedBy\` AS \`aws.cloudtrail.userIdentity.invokedBy\`,
+
+              eventVersion AS \`aws.cloudtrail.eventVersion\`,
+              CAST( eventTime AS TIMESTAMP)  AS \`@timestamp\`,
+              eventSource AS \`aws.cloudtrail.eventSource\`,
+              eventName AS \`aws.cloudtrail.eventName\`,
+              eventCategory AS \`aws.cloudtrail.eventCategory\`,
+              eventType AS \`aws.cloudtrail.eventType\`,
+              eventId AS \`aws.cloudtrail.eventId\`,
+
+              awsRegion AS \`aws.cloudtrail.awsRegion\`,
+              sourceIPAddress AS \`aws.cloudtrail.sourceIPAddress\`,
+              userAgent AS \`aws.cloudtrail.userAgent\`,
+
+              requestParameters AS \`aws.cloudtrail.requestParameter\`,
+
+              responseElements AS \`aws.cloudtrail.responseElements\`,
+
+              requestId AS \`aws.cloudtrail.requestId\`,
+              resources AS \`aws.cloudtrail.resources\`,
+              readOnly AS \`aws.cloudtrail.readOnly\`,
+              recipientAccountId AS \`aws.cloudtrail.recipientAccountId\`,
+              sharedEventId AS \`aws.cloudtrail.sharedEventId\`,
+            FROM
+              ${tableName}
+            WITH (
+                auto_refresh = ${enableAutoRefresh},
+                refresh_interval = '${refreshInterval}'
+            )`;
+};
+```
+
+- However, still not sure about `requestParameters AS aws.cloudtrail.requestParameter,` and `responseElements AS aws.cloudtrail.responseElements,`. These are hived fields in log group table.
+- Awaiting on Nexus Team to fix the OSD in their test account for viewing current cloudtrail dashboards
