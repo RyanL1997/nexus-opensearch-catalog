@@ -449,3 +449,55 @@ userIdentity.type
                 refresh_interval = '${refreshInterval}'
             )`;
 ```
+
+## 10/09/2024
+
+### VPC
+
+- Demo for VPC Integration Dashboards
+  - Setup with 10,000 rows of data from test account's log group
+  - MV is created by the following aggregated query
+
+```sql
+CREATE MATERIALIZED VIEW vpc_mv_10000_100424_agg
+AS
+  SELECT
+    TUMBLE(`@timestamp`, '1 Minute').start AS `start_time`,
+    action AS `aws.vpc.action`,
+    srcAddr AS `aws.vpc.srcaddr`,
+    dstAddr AS `aws.vpc.dstaddr`,
+    COUNT(*) AS `aws.vpc.total_count`,
+    SUM(bytes) AS `aws.vpc.total_bytes`,
+    SUM(packets) AS `aws.vpc.total_packets`
+  FROM (
+    SELECT
+      action,
+      srcAddr,
+      dstAddr,
+      bytes,
+      packets,
+      CAST(FROM_UNIXTIME(start) AS TIMESTAMP) AS `@timestamp`
+    FROM
+      aws_vpc_loggroup10000rows
+  )
+GROUP BY
+  TUMBLE(`@timestamp`, '1 Minute'),
+  action,
+  srcAddr,
+  dstAddr
+-- WITH (
+--   auto_refresh = true,
+--   refresh_interval = '15 Minute',
+--   watermark_delay = '1 Minute',
+--   checkpoint_location = '{checkpoint_location}'
+-- )
+```
+
+- Compare to the original VPC dashboards, we just dropped the visualization of `Filters` and `Raw search table` panels.
+
+## 10/10/2024
+
+### VPC
+
+- Instead of dropping the `Filters` visualizations completely, added back the filter panel for only following fields for: `srcAddr`, `dstAddr`, and `action`
+- Updated the ndjson in this repo with the latest version of VPC panels
