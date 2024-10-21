@@ -20,7 +20,7 @@ FROM (
     {table_name}
 )
 GROUP BY
-  TUMBLE(`@timestamp`, '1 Minute'),
+  TUMBLE(`@timestamp`, '5 Minute'),
   action,
   srcAddr,
   dstAddr
