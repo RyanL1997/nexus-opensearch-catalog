@@ -553,3 +553,12 @@ export const getCloudTrailLogsQuery = (
 
 - However, still not sure about `requestParameters AS aws.cloudtrail.requestParameter,` and `responseElements AS aws.cloudtrail.responseElements,`. These are hived fields in log group table.
 - Awaiting on Nexus Team to fix the OSD in their test account for viewing current cloudtrail dashboards
+
+## 10/21/2024
+
+### CloudTrail
+
+- Download 10,000 rows of sample log group data (`raw-cloudtrail-1021-10000rows.json`) and upload into my own S3 bucket: `s3://nexus-flint-integration/checkpoints/loggroup_vpc_${unique_id}/`
+- Upload the table creation query from opensearch to this repo: `cloudtrail-opensearch-table-old.sql`
+- Upload the draft version of mv creation query for CloudTrail: `cloudtrail-opensearch-agg-mv.sql`
+- Export the current visualizations from nexus test account and upload the `ndjson` file: `cloudtrail_nexus092024.ndjson`
