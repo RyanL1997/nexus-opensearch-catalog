@@ -998,3 +998,4 @@ WITH (
   checkpoint_location = '{s3_checkpoint_location}'
 )
 ```
+- Update the `vpc-opensearch-agg-mv.sql` with the above query

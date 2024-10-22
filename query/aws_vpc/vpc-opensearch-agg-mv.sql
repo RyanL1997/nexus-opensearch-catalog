@@ -1,7 +1,7 @@
 CREATE MATERIALIZED VIEW {materialized_view_name}
 AS
 SELECT
-  TUMBLE(`@timestamp`, '1 Minute').start AS `start_time`,
+  window.start AS `start_time`,
   action AS `aws.vpc.action`,
   srcAddr AS `aws.vpc.srcaddr`,
   dstAddr AS `aws.vpc.dstaddr`,
@@ -15,12 +15,12 @@ FROM (
     dstAddr,
     bytes,
     packets,
-    CAST(FROM_UNIXTIME(start) AS TIMESTAMP) AS `@timestamp`
+    window(CAST(FROM_UNIXTIME(start) AS TIMESTAMP), '5 minutes') AS window
   FROM
     {table_name}
 )
 GROUP BY
-  TUMBLE(`@timestamp`, '5 Minute'),
+  window,
   action,
   srcAddr,
   dstAddr
