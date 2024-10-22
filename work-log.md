@@ -999,3 +999,260 @@ WITH (
 )
 ```
 - Update the `vpc-opensearch-agg-mv.sql` with the above query
+
+## 10/22/2024
+
+### CloudTrail
+
+- Re-create another agg mv with more fields:
+
+  ```sql
+  CREATE MATERIALIZED VIEW aws_cloudtrail_agg_mv_0
+  AS
+  SELECT
+    window.start AS `start_time`,
+    `userIdentity.type` AS `aws.cloudtrail.userIdentity.type`,
+    `userIdentity.accountId` AS `aws.cloudtrail.userIdentity.accountId`,
+    `userIdentity.sessionContext.sessionIssuer.userName` AS `aws.cloudtrail.userIdentity.sessionContext.sessionIssuer.userName`,
+    `userIdentity.sessionContext.sessionIssuer.arn` AS `aws.cloudtrail.userIdentity.sessionContext.sessionIssuer.arn`,
+    `userIdentity.sessionContext.sessionIssuer.type` AS `aws.cloudtrail.userIdentity.sessionContext.sessionIssuer.type`,
+    awsRegion AS `aws.cloudtrail.awsRegion`,
+    sourceIPAddress AS `aws.cloudtrail.sourceIPAddress`,
+    eventSource AS `aws.cloudtrail.eventSource`,
+    eventName AS `aws.cloudtrail.eventName`,
+    eventCategory AS `aws.cloudtrail.eventCategory`,
+    COUNT(*) AS `aws.cloudtrail.event_count`
+  FROM (
+    SELECT
+      window(CAST(eventTime AS TIMESTAMP), '5 minutes') AS window,
+      userIdentity.`type` AS `userIdentity.type`,
+      userIdentity.`accountId` AS `userIdentity.accountId`,
+      userIdentity.sessionContext.sessionIssuer.userName AS `userIdentity.sessionContext.sessionIssuer.userName`,
+      userIdentity.sessionContext.sessionIssuer.arn AS `userIdentity.sessionContext.sessionIssuer.arn`,
+      userIdentity.sessionContext.sessionIssuer.type AS `userIdentity.sessionContext.sessionIssuer.type`,
+      awsRegion,
+      sourceIPAddress,
+      eventSource,
+      eventName,
+      eventCategory
+    FROM
+      aws_cloudtrail
+  )
+  GROUP BY
+    window,
+    `userIdentity.type`,
+    `userIdentity.accountId`,
+    `userIdentity.sessionContext.sessionIssuer.userName`,
+    `userIdentity.sessionContext.sessionIssuer.arn`,
+    `userIdentity.sessionContext.sessionIssuer.type`,
+    awsRegion,
+    sourceIPAddress,
+    eventSource,
+    eventName,
+    eventCategory
+  ```
+
+- Manual refresh the above index and check in the dev tool `GET flint_flinttest1_default_aws_cloudtrail_agg_mv_0/_search`:
+
+  ```
+  {
+    "took": 2,
+    "timed_out": false,
+    "_shards": {
+      "total": 5,
+      "successful": 5,
+      "skipped": 0,
+      "failed": 0
+    },
+    "hits": {
+      "total": {
+        "value": 46,
+        "relation": "eq"
+      },
+      "max_score": 1,
+      "hits": [
+        {
+          "_index": "flint_flinttest1_default_aws_cloudtrail_agg_mv_0",
+          "_id": "zYvJtZIBu8iMGHN21Lxa",
+          "_score": 1,
+          "_source": {
+            "start_time": "2024-09-27T21:30:00.000000+0000",
+            "aws.cloudtrail.userIdentity.type": "AssumedRole",
+            "aws.cloudtrail.userIdentity.accountId": "481665107626",
+            "aws.cloudtrail.userIdentity.sessionContext.sessionIssuer.userName": "Admin",
+            "aws.cloudtrail.userIdentity.sessionContext.sessionIssuer.arn": "arn:aws:iam::481665107626:role/Admin",
+            "aws.cloudtrail.userIdentity.sessionContext.sessionIssuer.type": "Role",
+            "aws.cloudtrail.awsRegion": "us-east-1",
+            "aws.cloudtrail.sourceIPAddress": "AWS Internal",
+            "aws.cloudtrail.eventSource": "signin.amazonaws.com",
+            "aws.cloudtrail.eventName": "GetSigninToken",
+            "aws.cloudtrail.eventCategory": "Management",
+            "aws.cloudtrail.event_count": 1
+          }
+        },
+        {
+          "_index": "flint_flinttest1_default_aws_cloudtrail_agg_mv_0",
+          "_id": "1IvJtZIBu8iMGHN21Lxa",
+          "_score": 1,
+          "_source": {
+            "start_time": "2024-09-27T21:35:00.000000+0000",
+            "aws.cloudtrail.userIdentity.type": "AWSService",
+            "aws.cloudtrail.awsRegion": "us-west-2",
+            "aws.cloudtrail.sourceIPAddress": "scheduler.amazonaws.com",
+            "aws.cloudtrail.eventSource": "sts.amazonaws.com",
+            "aws.cloudtrail.eventName": "AssumeRole",
+            "aws.cloudtrail.eventCategory": "Management",
+            "aws.cloudtrail.event_count": 10
+          }
+        },
+        {
+          "_index": "flint_flinttest1_default_aws_cloudtrail_agg_mv_0",
+          "_id": "1YvJtZIBu8iMGHN21Lxa",
+          "_score": 1,
+          "_source": {
+            "start_time": "2024-09-27T21:35:00.000000+0000",
+            "aws.cloudtrail.userIdentity.type": "AssumedRole",
+            "aws.cloudtrail.userIdentity.accountId": "481665107626",
+            "aws.cloudtrail.userIdentity.sessionContext.sessionIssuer.userName": "Admin",
+            "aws.cloudtrail.userIdentity.sessionContext.sessionIssuer.arn": "arn:aws:iam::481665107626:role/Admin",
+            "aws.cloudtrail.userIdentity.sessionContext.sessionIssuer.type": "Role",
+            "aws.cloudtrail.awsRegion": "us-west-2",
+            "aws.cloudtrail.sourceIPAddress": "205.251.233.178",
+            "aws.cloudtrail.eventSource": "securityhub.amazonaws.com",
+            "aws.cloudtrail.eventName": "DescribeHub",
+            "aws.cloudtrail.eventCategory": "Management",
+            "aws.cloudtrail.event_count": 1
+          }
+        },
+        {
+          "_index": "flint_flinttest1_default_aws_cloudtrail_agg_mv_0",
+          "_id": "2ovJtZIBu8iMGHN21Lxa",
+          "_score": 1,
+          "_source": {
+            "start_time": "2024-09-27T21:35:00.000000+0000",
+            "aws.cloudtrail.userIdentity.type": "AssumedRole",
+            "aws.cloudtrail.userIdentity.accountId": "481665107626",
+            "aws.cloudtrail.userIdentity.sessionContext.sessionIssuer.userName": "Admin",
+            "aws.cloudtrail.userIdentity.sessionContext.sessionIssuer.arn": "arn:aws:iam::481665107626:role/Admin",
+            "aws.cloudtrail.userIdentity.sessionContext.sessionIssuer.type": "Role",
+            "aws.cloudtrail.awsRegion": "us-west-2",
+            "aws.cloudtrail.sourceIPAddress": "205.251.233.232",
+            "aws.cloudtrail.eventSource": "monitoring.amazonaws.com",
+            "aws.cloudtrail.eventName": "DescribeAlarms",
+            "aws.cloudtrail.eventCategory": "Management",
+            "aws.cloudtrail.event_count": 2
+          }
+        },
+        {
+          "_index": "flint_flinttest1_default_aws_cloudtrail_agg_mv_0",
+          "_id": "3ovJtZIBu8iMGHN21Lxa",
+          "_score": 1,
+          "_source": {
+            "start_time": "2024-09-27T21:40:00.000000+0000",
+            "aws.cloudtrail.userIdentity.type": "AWSService",
+            "aws.cloudtrail.awsRegion": "us-west-2",
+            "aws.cloudtrail.sourceIPAddress": "cloudtrail.amazonaws.com",
+            "aws.cloudtrail.eventSource": "kms.amazonaws.com",
+            "aws.cloudtrail.eventName": "GenerateDataKey",
+            "aws.cloudtrail.eventCategory": "Management",
+            "aws.cloudtrail.event_count": 1
+          }
+        },
+        {
+          "_index": "flint_flinttest1_default_aws_cloudtrail_agg_mv_0",
+          "_id": "5ovJtZIBu8iMGHN21Lxa",
+          "_score": 1,
+          "_source": {
+            "start_time": "2024-09-27T21:35:00.000000+0000",
+            "aws.cloudtrail.userIdentity.type": "AssumedRole",
+            "aws.cloudtrail.userIdentity.accountId": "481665107626",
+            "aws.cloudtrail.userIdentity.sessionContext.sessionIssuer.userName": "Admin",
+            "aws.cloudtrail.userIdentity.sessionContext.sessionIssuer.arn": "arn:aws:iam::481665107626:role/Admin",
+            "aws.cloudtrail.userIdentity.sessionContext.sessionIssuer.type": "Role",
+            "aws.cloudtrail.awsRegion": "us-east-1",
+            "aws.cloudtrail.sourceIPAddress": "72.21.198.64",
+            "aws.cloudtrail.eventSource": "ce.amazonaws.com",
+            "aws.cloudtrail.eventName": "GetCostAndUsage",
+            "aws.cloudtrail.eventCategory": "Management",
+            "aws.cloudtrail.event_count": 2
+          }
+        },
+        {
+          "_index": "flint_flinttest1_default_aws_cloudtrail_agg_mv_0",
+          "_id": "6ovJtZIBu8iMGHN21Lxa",
+          "_score": 1,
+          "_source": {
+            "start_time": "2024-09-27T21:30:00.000000+0000",
+            "aws.cloudtrail.userIdentity.type": "AssumedRole",
+            "aws.cloudtrail.userIdentity.accountId": "481665107626",
+            "aws.cloudtrail.userIdentity.sessionContext.sessionIssuer.userName": "Admin",
+            "aws.cloudtrail.userIdentity.sessionContext.sessionIssuer.arn": "arn:aws:iam::481665107626:role/Admin",
+            "aws.cloudtrail.userIdentity.sessionContext.sessionIssuer.type": "Role",
+            "aws.cloudtrail.awsRegion": "us-east-1",
+            "aws.cloudtrail.sourceIPAddress": "72.21.198.64",
+            "aws.cloudtrail.eventSource": "cost-optimization-hub.amazonaws.com",
+            "aws.cloudtrail.eventName": "ListEnrollmentStatuses",
+            "aws.cloudtrail.eventCategory": "Management",
+            "aws.cloudtrail.event_count": 1
+          }
+        },
+        {
+          "_index": "flint_flinttest1_default_aws_cloudtrail_agg_mv_0",
+          "_id": "74vJtZIBu8iMGHN21Lxa",
+          "_score": 1,
+          "_source": {
+            "start_time": "2024-09-27T21:35:00.000000+0000",
+            "aws.cloudtrail.userIdentity.type": "AssumedRole",
+            "aws.cloudtrail.userIdentity.accountId": "481665107626",
+            "aws.cloudtrail.userIdentity.sessionContext.sessionIssuer.userName": "Admin",
+            "aws.cloudtrail.userIdentity.sessionContext.sessionIssuer.arn": "arn:aws:iam::481665107626:role/Admin",
+            "aws.cloudtrail.userIdentity.sessionContext.sessionIssuer.type": "Role",
+            "aws.cloudtrail.awsRegion": "us-west-2",
+            "aws.cloudtrail.sourceIPAddress": "205.251.233.232",
+            "aws.cloudtrail.eventSource": "logs.amazonaws.com",
+            "aws.cloudtrail.eventName": "DescribeLogGroups",
+            "aws.cloudtrail.eventCategory": "Management",
+            "aws.cloudtrail.event_count": 2
+          }
+        },
+        {
+          "_index": "flint_flinttest1_default_aws_cloudtrail_agg_mv_0",
+          "_id": "9YvJtZIBu8iMGHN21Lxa",
+          "_score": 1,
+          "_source": {
+            "start_time": "2024-09-27T21:35:00.000000+0000",
+            "aws.cloudtrail.userIdentity.type": "AssumedRole",
+            "aws.cloudtrail.userIdentity.accountId": "481665107626",
+            "aws.cloudtrail.userIdentity.sessionContext.sessionIssuer.userName": "Admin",
+            "aws.cloudtrail.userIdentity.sessionContext.sessionIssuer.arn": "arn:aws:iam::481665107626:role/Admin",
+            "aws.cloudtrail.userIdentity.sessionContext.sessionIssuer.type": "Role",
+            "aws.cloudtrail.awsRegion": "us-east-1",
+            "aws.cloudtrail.sourceIPAddress": "52.94.133.136",
+            "aws.cloudtrail.eventSource": "health.amazonaws.com",
+            "aws.cloudtrail.eventName": "DescribeEventAggregates",
+            "aws.cloudtrail.eventCategory": "Management",
+            "aws.cloudtrail.event_count": 3
+          }
+        },
+        {
+          "_index": "flint_flinttest1_default_aws_cloudtrail_agg_mv_0",
+          "_id": "-ovJtZIBu8iMGHN21Lxa",
+          "_score": 1,
+          "_source": {
+            "start_time": "2024-09-27T21:35:00.000000+0000",
+            "aws.cloudtrail.userIdentity.type": "AWSAccount",
+            "aws.cloudtrail.userIdentity.accountId": "727820809195",
+            "aws.cloudtrail.awsRegion": "us-east-1",
+            "aws.cloudtrail.sourceIPAddress": "AWS Internal",
+            "aws.cloudtrail.eventSource": "sts.amazonaws.com",
+            "aws.cloudtrail.eventName": "AssumeRole",
+            "aws.cloudtrail.eventCategory": "Management",
+            "aws.cloudtrail.event_count": 1
+          }
+        }
+      ]
+    }
+  }
+  ```
+
+- Try to set up the visualization by referencing to original `cloudtrail_nexus092024.ndjson` on test account. Upload the aggregated version as `cloudtril_opensearch_agg.ndjson`

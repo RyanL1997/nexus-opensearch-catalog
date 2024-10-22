@@ -1,46 +1,14 @@
--- VERSION: 2.0
-CREATE MATERIALIZED VIEW {materialized_view_name}
-AS
-SELECT
-  TUMBLE(CAST(eventTime AS TIMESTAMP), '5 Minutes').start AS `start_time`,
-  `userIdentity.type` AS `aws.cloudtrail.userIdentity.type`,
-  eventSource AS `aws.cloudtrail.eventSource`,
-  eventName AS `aws.cloudtrail.eventName`,
-  eventCategory AS `aws.cloudtrail.eventCategory`,
-  COUNT(*) AS `aws.cloudtrail.event_count`,
-  -- SUM(CASE WHEN additionalEventData.bytesTransferredIn IS NOT NULL THEN additionalEventData.bytesTransferredIn ELSE 0 END) AS `aws.cloudtrail.total_bytes_in`,
-  -- SUM(CASE WHEN additionalEventData.bytesTransferredOut IS NOT NULL THEN additionalEventData.bytesTransferredOut ELSE 0 END) AS `aws.cloudtrail.total_bytes_out`
-FROM (
-  SELECT
-    eventTime,
-    `userIdentity.type`,
-    eventSource,
-    eventName,
-    eventCategory,
-    -- additionalEventData.bytesTransferredIn,
-    -- additionalEventData.bytesTransferredOut
-  FROM
-    {table_name}
-)
-GROUP BY
-  TUMBLE(CAST(eventTime AS TIMESTAMP), '5 Minutes'),
-  `userIdentity.type`,
-  eventSource,
-  eventName,
-  eventCategory
-WITH (
-  auto_refresh = true,
-  refresh_interval = '15 Minutes',
-  watermark_delay = '1 Minutes',
-  checkpoint_location = '{s3_checkpoint_location}'
-)
-
---- VERSION: 3.0 [TESTED]
 CREATE MATERIALIZED VIEW {materialized_view_name}
 AS
 SELECT
   window.start AS `start_time`,
   `userIdentity.type` AS `aws.cloudtrail.userIdentity.type`,
+  `userIdentity.accountId` AS `aws.cloudtrail.userIdentity.accountId`,
+  `userIdentity.sessionContext.sessionIssuer.userName` AS `aws.cloudtrail.userIdentity.sessionContext.sessionIssuer.userName`,
+  `userIdentity.sessionContext.sessionIssuer.arn` AS `aws.cloudtrail.userIdentity.sessionContext.sessionIssuer.arn`,
+  `userIdentity.sessionContext.sessionIssuer.type` AS `aws.cloudtrail.userIdentity.sessionContext.sessionIssuer.type`,
+  awsRegion AS `aws.cloudtrail.awsRegion`,
+  sourceIPAddress AS `aws.cloudtrail.sourceIPAddress`,
   eventSource AS `aws.cloudtrail.eventSource`,
   eventName AS `aws.cloudtrail.eventName`,
   eventCategory AS `aws.cloudtrail.eventCategory`,
@@ -49,6 +17,12 @@ FROM (
   SELECT
     window(CAST(eventTime AS TIMESTAMP), '5 minutes') AS window,
     userIdentity.`type` AS `userIdentity.type`,
+    userIdentity.`accountId` AS `userIdentity.accountId`,
+    userIdentity.sessionContext.sessionIssuer.userName AS `userIdentity.sessionContext.sessionIssuer.userName`,
+    userIdentity.sessionContext.sessionIssuer.arn AS `userIdentity.sessionContext.sessionIssuer.arn`,
+    userIdentity.sessionContext.sessionIssuer.type AS `userIdentity.sessionContext.sessionIssuer.type`,
+    awsRegion,
+    sourceIPAddress,
     eventSource,
     eventName,
     eventCategory
@@ -58,6 +32,12 @@ FROM (
 GROUP BY
   window,
   `userIdentity.type`,
+  `userIdentity.accountId`,
+  `userIdentity.sessionContext.sessionIssuer.userName`,
+  `userIdentity.sessionContext.sessionIssuer.arn`,
+  `userIdentity.sessionContext.sessionIssuer.type`,
+  awsRegion,
+  sourceIPAddress,
   eventSource,
   eventName,
   eventCategory
@@ -67,4 +47,3 @@ WITH (
   watermark_delay = '1 Minute',
   checkpoint_location = '{s3_checkpoint_location}'
 );
-
