@@ -1,0 +1,41 @@
+CREATE EXTERNAL TABLE IF NOT EXISTS {table_name} (
+    eventVersion STRING,
+    userIdentity_type STRING,
+    userIdentity_invokedBy STRING,
+    eventTime STRING,
+    eventSource STRING,
+    eventName STRING,
+    awsRegion STRING,
+    sourceIPAddress STRING,
+    userAgent STRING,
+    requestParameters_bucketName STRING,
+    requestParameters_Host STRING,
+    requestParameters_acl STRING,
+    responseElements STRING,
+    additionalEventData_AuthenticationMethod STRING,
+    additionalEventData_bytesTransferredIn INT,
+    additionalEventData_bytesTransferredOut INT,
+    additionalEventData_CipherSuite STRING,
+    additionalEventData_SignatureVersion STRING,
+    additionalEventData_x_amz_id_2 STRING,
+    requestID STRING,
+    eventID STRING,
+    readOnly BOOLEAN,
+    resources_accountId ARRAY<STRING>,
+    resources_ARN ARRAY<STRING>,
+    resources_type ARRAY<STRING>,
+    eventType STRING,
+    managementEvent BOOLEAN,
+    recipientAccountId STRING,
+    sharedEventID STRING,
+    eventCategory STRING,
+    tlsDetails_tlsVersion STRING,
+    tlsDetails_cipherSuite STRING,
+    tlsDetails_clientProvidedHostHeader STRING
+)
+USING json
+OPTIONS (
+   PATH '{s3_bucket_location}',
+   recursivefilelookup='true',
+   multiline='true'
+);

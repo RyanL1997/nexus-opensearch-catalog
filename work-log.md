@@ -562,3 +562,358 @@ export const getCloudTrailLogsQuery = (
 - Upload the table creation query from opensearch to this repo: `cloudtrail-opensearch-table-old.sql`
 - Upload the draft version of mv creation query for CloudTrail: `cloudtrail-opensearch-agg-mv.sql`
 - Export the current visualizations from nexus test account and upload the `ndjson` file: `cloudtrail_nexus092024.ndjson`
+- Try to create a CloudTrail table by using the OS CloudTrail table creation query, however, the data is from Nexis log group CloudTrail:
+
+  ``` sql
+  CREATE EXTERNAL TABLE IF NOT EXISTS cloudtrail_table_os_old (
+      eventVersion STRING,
+      userIdentity STRUCT<
+        type:STRING,
+        principalId:STRING,
+        arn:STRING,
+        accountId:STRING,
+        invokedBy:STRING,
+        accessKeyId:STRING,
+        userName:STRING,
+        sessionContext:STRUCT<
+          attributes:STRUCT<
+            mfaAuthenticated:STRING,
+            creationDate:STRING
+          >,
+          sessionIssuer:STRUCT<
+            type:STRING,
+            principalId:STRING,
+            arn:STRING,
+            accountId:STRING,
+            userName:STRING
+          >,
+          ec2RoleDelivery:STRING,
+          webIdFederationData:MAP<STRING,STRING>
+        >
+      >,
+      eventTime STRING,
+      eventSource STRING,
+      eventName STRING,
+      awsRegion STRING,
+      sourceIPAddress STRING,
+      userAgent STRING,
+      errorCode STRING,
+      errorMessage STRING,
+      requestParameters STRING,
+      responseElements STRING,
+      additionalEventData STRING,
+      requestId STRING,
+      eventId STRING,
+      resources ARRAY<STRUCT<
+        arn:STRING,
+        accountId:STRING,
+        type:STRING
+      >>,
+      eventType STRING,
+      apiVersion STRING,
+      readOnly STRING,
+      recipientAccountId STRING,
+      serviceEventDetails STRING,
+      sharedEventId STRING,
+      vpcEndpointId STRING,
+      eventCategory STRING,
+      tlsDetails STRUCT<
+        tlsVersion:STRING,
+        cipherSuite:STRING,
+        clientProvidedHostHeader:STRING
+      >
+  )
+  USING json
+  OPTIONS (
+     PATH 's3://nexus-flint-integration/loggroup_cloudtrail/',
+     recursivefilelookup='true',
+     multiline 'true'
+  )
+  ```
+
+- Verify the above table ```select * from `flinttest1`.`default`.`cloudtrail_table_os_old` limit 10``` and it gives empty table, which means there is a mimatch between the loggroup data adn table creation query
+- Modify the table creation query to the following for matching the Nexus log group table:
+
+  ```sql
+  CREATE EXTERNAL TABLE IF NOT EXISTS {table_name} (
+      eventVersion STRING,
+      userIdentity STRUCT<
+        type: STRING,
+        invokedBy: STRING
+      >,
+      eventTime STRING,
+      eventSource STRING,
+      eventName STRING,
+      awsRegion STRING,
+      sourceIPAddress STRING,
+      userAgent STRING,
+      requestParameters STRUCT<
+        bucketName: STRING,
+        Host: STRING,
+        acl: STRING
+      >,
+      responseElements STRING,
+      additionalEventData STRUCT<
+        AuthenticationMethod: STRING,
+        bytesTransferredIn: INT,
+        bytesTransferredOut: INT,
+        CipherSuite: STRING,
+        SignatureVersion: STRING,
+        x_amz_id_2: STRING
+      >,
+      requestID STRING,
+      eventID STRING,
+      readOnly BOOLEAN,
+      resources ARRAY<STRUCT<
+        accountId: STRING,
+        ARN: STRING,
+        type: STRING
+      >>,
+      eventType STRING,
+      managementEvent BOOLEAN,
+      recipientAccountId STRING,
+      sharedEventID STRING,
+      eventCategory STRING,
+      tlsDetails STRUCT<
+        tlsVersion: STRING,
+        cipherSuite: STRING,
+        clientProvidedHostHeader: STRING
+      >
+  )
+  USING json
+  OPTIONS (
+     PATH '{s3_bucket_location}',
+     recursivefilelookup='true',
+     multiline='true'
+  );
+  ```
+
+- Also, for not dealing with the complicated hived structure, we got another flattern version for the above table creation query which seems doesn't work cuz it gives an empty table:
+
+  ```sql
+  CREATE EXTERNAL TABLE IF NOT EXISTS aws_cloudtrail_nohive (
+      eventVersion STRING,
+      userIdentity_type STRING,
+      userIdentity_invokedBy STRING,
+      eventTime STRING,
+      eventSource STRING,
+      eventName STRING,
+      awsRegion STRING,
+      sourceIPAddress STRING,
+      userAgent STRING,
+      requestParameters_bucketName STRING,
+      requestParameters_Host STRING,
+      requestParameters_acl STRING,
+      responseElements STRING,
+      additionalEventData_AuthenticationMethod STRING,
+      additionalEventData_bytesTransferredIn INT,
+      additionalEventData_bytesTransferredOut INT,
+      additionalEventData_CipherSuite STRING,
+      additionalEventData_SignatureVersion STRING,
+      additionalEventData_x_amz_id_2 STRING,
+      requestID STRING,
+      eventID STRING,
+      readOnly BOOLEAN,
+      resources_accountId ARRAY<STRING>,
+      resources_ARN ARRAY<STRING>,
+      resources_type ARRAY<STRING>,
+      eventType STRING,
+      managementEvent BOOLEAN,
+      recipientAccountId STRING,
+      sharedEventID STRING,
+      eventCategory STRING,
+      tlsDetails_tlsVersion STRING,
+      tlsDetails_cipherSuite STRING,
+      tlsDetails_clientProvidedHostHeader STRING
+  )
+  USING json
+  OPTIONS (
+     PATH 's3://nexus-flint-integration/loggroup_cloudtrail/',
+     recursivefilelookup='true',
+     multiline='true'
+  );
+  ```
+
+- Run the aggregated MV creation query for CloudTrail (manual refresh):
+
+```sql
+CREATE MATERIALIZED VIEW aws_cloudtrail_agg_mv_0
+AS
+SELECT
+  window.start AS `start_time`,
+  `userIdentity.type` AS `aws.cloudtrail.userIdentity.type`,
+  eventSource AS `aws.cloudtrail.eventSource`,
+  eventName AS `aws.cloudtrail.eventName`,
+  eventCategory AS `aws.cloudtrail.eventCategory`,
+  COUNT(*) AS `aws.cloudtrail.event_count`
+FROM (
+  SELECT
+    window(CAST(eventTime AS TIMESTAMP), '5 minutes') AS window,
+    userIdentity.`type` AS `userIdentity.type`,
+    eventSource,
+    eventName,
+    eventCategory
+  FROM
+    aws_cloudtrail
+)
+GROUP BY
+  window,
+  `userIdentity.type`,
+  eventSource,
+  eventName,
+  eventCategory
+```
+
+- Manually refresh the MV index: `REFRESH MATERIALIZED VIEW aws_cloudtrail_agg_mv_0`, then we `CAT` in dev tool: `GET flint_flinttest1_default_aws_cloudtrail_agg_mv_0/_search`, response shows it works:
+
+  ```
+  {
+    "took": 828,
+    "timed_out": false,
+    "_shards": {
+      "total": 5,
+      "successful": 5,
+      "skipped": 0,
+      "failed": 0
+    },
+    "hits": {
+      "total": {
+        "value": 41,
+        "relation": "eq"
+      },
+      "max_score": 1,
+      "hits": [
+        {
+          "_index": "flint_flinttest1_default_aws_cloudtrail_agg_mv_0",
+          "_id": "1eVJspIBF9MBwyhVHp6G",
+          "_score": 1,
+          "_source": {
+            "start_time": "2024-09-27T21:35:00.000000+0000",
+            "aws.cloudtrail.userIdentity.type": "AssumedRole",
+            "aws.cloudtrail.eventSource": "ce.amazonaws.com",
+            "aws.cloudtrail.eventName": "GetCostForecast",
+            "aws.cloudtrail.eventCategory": "Management",
+            "aws.cloudtrail.event_count": 1
+          }
+        },
+        {
+          "_index": "flint_flinttest1_default_aws_cloudtrail_agg_mv_0",
+          "_id": "8OVJspIBF9MBwyhVHp6G",
+          "_score": 1,
+          "_source": {
+            "start_time": "2024-09-27T21:30:00.000000+0000",
+            "aws.cloudtrail.userIdentity.type": "AssumedRole",
+            "aws.cloudtrail.eventSource": "health.amazonaws.com",
+            "aws.cloudtrail.eventName": "DescribeEventAggregates",
+            "aws.cloudtrail.eventCategory": "Management",
+            "aws.cloudtrail.event_count": 3
+          }
+        },
+        {
+          "_index": "flint_flinttest1_default_aws_cloudtrail_agg_mv_0",
+          "_id": "8eVJspIBF9MBwyhVHp6G",
+          "_score": 1,
+          "_source": {
+            "start_time": "2024-09-27T21:35:00.000000+0000",
+            "aws.cloudtrail.userIdentity.type": "AssumedRole",
+            "aws.cloudtrail.eventSource": "securityhub.amazonaws.com",
+            "aws.cloudtrail.eventName": "DescribeHub",
+            "aws.cloudtrail.eventCategory": "Management",
+            "aws.cloudtrail.event_count": 1
+          }
+        },
+        {
+          "_index": "flint_flinttest1_default_aws_cloudtrail_agg_mv_0",
+          "_id": "8-VJspIBF9MBwyhVHp6G",
+          "_score": 1,
+          "_source": {
+            "start_time": "2024-09-27T21:30:00.000000+0000",
+            "aws.cloudtrail.userIdentity.type": "AssumedRole",
+            "aws.cloudtrail.eventSource": "signin.amazonaws.com",
+            "aws.cloudtrail.eventName": "GetSigninToken",
+            "aws.cloudtrail.eventCategory": "Management",
+            "aws.cloudtrail.event_count": 1
+          }
+        },
+        {
+          "_index": "flint_flinttest1_default_aws_cloudtrail_agg_mv_0",
+          "_id": "9eVJspIBF9MBwyhVHp6G",
+          "_score": 1,
+          "_source": {
+            "start_time": "2024-09-27T21:35:00.000000+0000",
+            "aws.cloudtrail.userIdentity.type": "AssumedRole",
+            "aws.cloudtrail.eventSource": "monitoring.amazonaws.com",
+            "aws.cloudtrail.eventName": "GetDashboard",
+            "aws.cloudtrail.eventCategory": "Management",
+            "aws.cloudtrail.event_count": 1
+          }
+        },
+        {
+          "_index": "flint_flinttest1_default_aws_cloudtrail_agg_mv_0",
+          "_id": "9uVJspIBF9MBwyhVHp6G",
+          "_score": 1,
+          "_source": {
+            "start_time": "2024-09-27T21:35:00.000000+0000",
+            "aws.cloudtrail.userIdentity.type": "AssumedRole",
+            "aws.cloudtrail.eventSource": "logs.amazonaws.com",
+            "aws.cloudtrail.eventName": "GetLogGroupFields",
+            "aws.cloudtrail.eventCategory": "Management",
+            "aws.cloudtrail.event_count": 1
+          }
+        },
+        {
+          "_index": "flint_flinttest1_default_aws_cloudtrail_agg_mv_0",
+          "_id": "2OVJspIBF9MBwyhVHp6G",
+          "_score": 1,
+          "_source": {
+            "start_time": "2024-09-27T21:30:00.000000+0000",
+            "aws.cloudtrail.userIdentity.type": "AssumedRole",
+            "aws.cloudtrail.eventSource": "ce.amazonaws.com",
+            "aws.cloudtrail.eventName": "GetCostForecast",
+            "aws.cloudtrail.eventCategory": "Management",
+            "aws.cloudtrail.event_count": 1
+          }
+        },
+        {
+          "_index": "flint_flinttest1_default_aws_cloudtrail_agg_mv_0",
+          "_id": "3uVJspIBF9MBwyhVHp6G",
+          "_score": 1,
+          "_source": {
+            "start_time": "2024-09-27T21:40:00.000000+0000",
+            "aws.cloudtrail.userIdentity.type": "AWSService",
+            "aws.cloudtrail.eventSource": "kms.amazonaws.com",
+            "aws.cloudtrail.eventName": "GenerateDataKey",
+            "aws.cloudtrail.eventCategory": "Management",
+            "aws.cloudtrail.event_count": 1
+          }
+        },
+        {
+          "_index": "flint_flinttest1_default_aws_cloudtrail_agg_mv_0",
+          "_id": "4OVJspIBF9MBwyhVHp6G",
+          "_score": 1,
+          "_source": {
+            "start_time": "2024-09-27T21:30:00.000000+0000",
+            "aws.cloudtrail.userIdentity.type": "AssumedRole",
+            "aws.cloudtrail.eventSource": "cost-optimization-hub.amazonaws.com",
+            "aws.cloudtrail.eventName": "ListEnrollmentStatuses",
+            "aws.cloudtrail.eventCategory": "Management",
+            "aws.cloudtrail.event_count": 1
+          }
+        },
+        {
+          "_index": "flint_flinttest1_default_aws_cloudtrail_agg_mv_0",
+          "_id": "6-VJspIBF9MBwyhVHp6G",
+          "_score": 1,
+          "_source": {
+            "start_time": "2024-09-27T21:40:00.000000+0000",
+            "aws.cloudtrail.userIdentity.type": "AWSService",
+            "aws.cloudtrail.eventSource": "sts.amazonaws.com",
+            "aws.cloudtrail.eventName": "AssumeRole",
+            "aws.cloudtrail.eventCategory": "Management",
+            "aws.cloudtrail.event_count": 1
+          }
+        }
+      ]
+    }
+  }
+  ```
