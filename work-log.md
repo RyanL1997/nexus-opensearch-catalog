@@ -917,3 +917,84 @@ GROUP BY
     }
   }
   ```
+
+### VPC
+- Find a issue for the following VPC agg MV:
+
+```sql
+CREATE MATERIALIZED VIEW {materialized_view_name}
+AS
+SELECT
+  TUMBLE(`@timestamp`, '1 Minute').start AS `start_time`,
+  action AS `aws.vpc.action`,
+  srcAddr AS `aws.vpc.srcaddr`,
+  dstAddr AS `aws.vpc.dstaddr`,
+  COUNT(*) AS `aws.vpc.total_count`,
+  SUM(bytes) AS `aws.vpc.total_bytes`,
+  SUM(packets) AS `aws.vpc.total_packets`
+FROM (
+  SELECT
+    action,
+    srcAddr,
+    dstAddr,
+    bytes,
+    packets,
+    CAST(FROM_UNIXTIME(start) AS TIMESTAMP) AS `@timestamp`
+  FROM
+    {table_name}
+)
+GROUP BY
+  TUMBLE(`@timestamp`, '5 Minute'),
+  action,
+  srcAddr,
+  dstAddr
+WITH (
+  auto_refresh = true,
+  refresh_interval = '15 Minute',
+  watermark_delay = '1 Minute',
+  checkpoint_location = '{s3_checkpoint_location}'
+)
+```
+As of today, it give following error:
+
+```
+            "error": "{\"Message\":\"Fail to analyze query. Cause: [UNRESOLVED_COLUMN.WITH_SUGGESTION] A column or function parameter with name `start` cannot be resolved. Did you mean one of the following? [`bytes`, `dstAddr`, `action`, `packets`, `srcAddr`].; line 1 pos 35;\\n'Aggregate [window#8, action#29, srcAddr#20, dstAddr#21], ['TUMBLE(cast('FROM_UNIXTIME('start) as timestamp), 5 minutes) AS start_time#9, action#29 AS aws.vpc.action#10, srcAddr#20 AS aws.vpc.srcaddr#11, dstAddr#21 AS aws.vpc.dstaddr#12, count(1) AS aws.vpc.total_count#13L, sum(bytes#26L) AS aws.vpc.total_bytes#14L, sum(packets#25L) AS aws.vpc.total_packets#15L]\\n+- SubqueryAlias __auto_generated_subquery_name\\n   +- Project [action#29, srcAddr#20, dstAddr#21, bytes#26L, packets#25L, window#31 AS window#8]\\n      +- Project [named_struct(start, knownnullable(precisetimestampconversion(((precisetimestampconversion(cast(from_unixtime(start#27L, yyyy-MM-dd HH:mm:ss, Some(GMT)) as timestamp), TimestampType, LongType) - CASE WHEN (((precisetimestampconversion(cast(from_unixtime(start#27L, yyyy-MM-dd HH:mm:ss, Some(GMT)) as timestamp), TimestampType, LongType) - 0) % 300000000) < cast(0 as bigint)) THEN (((precisetimestampconversion(cast(from_unixtime(start#27L, yyyy-MM-dd HH:mm:ss, Some(GMT)) as timestamp), TimestampType, LongType) - 0) % 300000000) + 300000000) ELSE ((precisetimestampconversion(cast(from_unixtime(start#27L, yyyy-MM-dd HH:mm:ss, Some(GMT)) as timestamp), TimestampType, LongType) - 0) % 300000000) END) - 0), LongType, TimestampType)), end, knownnullable(precisetimestampconversion((((precisetimestampconversion(cast(from_unixtime(start#27L, yyyy-MM-dd HH:mm:ss, Some(GMT)) as timestamp), TimestampType, LongType) - CASE WHEN (((precisetimestampconversion(cast(from_unixtime(start#27L, yyyy-MM-dd HH:mm:ss, Some(GMT)) as timestamp), TimestampType, LongType) - 0) % 300000000) < cast(0 as bigint)) THEN (((precisetimestampconversion(cast(from_unixtime(start#27L, yyyy-MM-dd HH:mm:ss, Some(GMT)) as timestamp), TimestampType, LongType) - 0) % 300000000) + 300000000) ELSE ((precisetimestampconversion(cast(from_unixtime(start#27L, yyyy-MM-dd HH:mm:ss, Some(GMT)) as timestamp), TimestampType, LongType) - 0) % 300000000) END) - 0) + 300000000), LongType, TimestampType))) AS window#31, version#17, accountId#18, interfaceId#19, srcAddr#20, dstAddr#21, srcPort#22, dstPort#23, protocol#24L, packets#25L, bytes#26L, start#27L, end#28L, action#29, logStatus#30]\\n         +- Filter isnotnull(cast(from_unixtime(start#27L, yyyy-MM-dd HH:mm:ss, Some(GMT)) as timestamp))\\n            +- SubqueryAlias spark_catalog.default.aws_vpc_20k_oct7\\n               +- Relation spark_catalog.default.aws_vpc_20k_oct7[version#17,accountId#18,interfaceId#19,srcAddr#20,dstAddr#21,srcPort#22,dstPort#23,protocol#24L,packets#25L,bytes#26L,start#27L,end#28L,action#29,logStatus#30] csv\\n\"}"
+
+```
+
+Have to change into `window` function:
+
+```sql
+CREATE MATERIALIZED VIEW {materialized_view_name}
+AS
+SELECT
+  window.start AS `start_time`,
+  action AS `aws.vpc.action`,
+  srcAddr AS `aws.vpc.srcaddr`,
+  dstAddr AS `aws.vpc.dstaddr`,
+  COUNT(*) AS `aws.vpc.total_count`,
+  SUM(bytes) AS `aws.vpc.total_bytes`,
+  SUM(packets) AS `aws.vpc.total_packets`
+FROM (
+  SELECT
+    action,
+    srcAddr,
+    dstAddr,
+    bytes,
+    packets,
+    window(CAST(FROM_UNIXTIME(start) AS TIMESTAMP), '5 minutes') AS window
+  FROM
+    {table_name}
+)
+GROUP BY
+  window,
+  action,
+  srcAddr,
+  dstAddr
+WITH (
+  auto_refresh = true,
+  refresh_interval = '15 Minute',
+  watermark_delay = '1 Minute',
+  checkpoint_location = '{s3_checkpoint_location}'
+)
+```
