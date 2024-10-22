@@ -1,7 +1,7 @@
 CREATE MATERIALIZED VIEW {materialized_view_name}
 AS
 SELECT
-  window.start AS `start_time`,
+  TUMBLE(`@timestamp`, '5 Minute').start AS `start_time`,
   `userIdentity.type` AS `aws.cloudtrail.userIdentity.type`,
   `userIdentity.accountId` AS `aws.cloudtrail.userIdentity.accountId`,
   `userIdentity.sessionContext.sessionIssuer.userName` AS `aws.cloudtrail.userIdentity.sessionContext.sessionIssuer.userName`,
@@ -15,7 +15,7 @@ SELECT
   COUNT(*) AS `aws.cloudtrail.event_count`
 FROM (
   SELECT
-    window(CAST(eventTime AS TIMESTAMP), '5 minutes') AS window,
+    CAST(eventTime AS TIMESTAMP) AS `@timestamp`,
     userIdentity.`type` AS `userIdentity.type`,
     userIdentity.`accountId` AS `userIdentity.accountId`,
     userIdentity.sessionContext.sessionIssuer.userName AS `userIdentity.sessionContext.sessionIssuer.userName`,
@@ -30,7 +30,7 @@ FROM (
     {table_name}
 )
 GROUP BY
-  window,
+  TUMBLE(`@timestamp`, '5 Minute'),
   `userIdentity.type`,
   `userIdentity.accountId`,
   `userIdentity.sessionContext.sessionIssuer.userName`,

@@ -1256,3 +1256,96 @@ WITH (
   ```
 
 - Try to set up the visualization by referencing to original `cloudtrail_nexus092024.ndjson` on test account. Upload the aggregated version as `cloudtril_opensearch_agg.ndjson`
+
+### About Auto Refresh and Water Mark Delay
+- For supporting auto refresh, we need to switch back to use `TUMBLE()` function for our time interval. So I tested following and they works:
+
+  ```sql
+  CREATE MATERIALIZED VIEW aws_vpc_agg_mv_tumble
+  AS
+  SELECT
+    TUMBLE(`@timestamp`, '5 Minute').start AS `start_time`,
+    action AS `aws.vpc.action`,
+    srcAddr AS `aws.vpc.srcaddr`,
+    dstAddr AS `aws.vpc.dstaddr`,
+    COUNT(*) AS `aws.vpc.total_count`,
+    SUM(bytes) AS `aws.vpc.total_bytes`,
+    SUM(packets) AS `aws.vpc.total_packets`
+  FROM (
+    SELECT
+      action,
+      srcAddr,
+      dstAddr,
+      bytes,
+      packets,
+      CAST(FROM_UNIXTIME(start) AS TIMESTAMP) AS `@timestamp`
+    FROM
+      aws_vpc_20k_oct7
+  )
+  GROUP BY
+    TUMBLE(`@timestamp`, '5 Minute'),
+    action,
+    srcAddr,
+    dstAddr
+  WITH (
+    auto_refresh = true,
+    refresh_interval = '15 Minute',
+    watermark_delay = '1 Minute',
+    checkpoint_location = 's3://nexus-flint-integration/checkpoints/loggroup_vpc_1022tumble/'
+  )
+  ```
+
+  ```sql
+  CREATE MATERIALIZED VIEW aws_cloud_trail_agg_mv_tumble
+  AS
+  SELECT
+    TUMBLE(`@timestamp`, '5 Minute').start AS `start_time`,
+    `userIdentity.type` AS `aws.cloudtrail.userIdentity.type`,
+    `userIdentity.accountId` AS `aws.cloudtrail.userIdentity.accountId`,
+    `userIdentity.sessionContext.sessionIssuer.userName` AS `aws.cloudtrail.userIdentity.sessionContext.sessionIssuer.userName`,
+    `userIdentity.sessionContext.sessionIssuer.arn` AS `aws.cloudtrail.userIdentity.sessionContext.sessionIssuer.arn`,
+    `userIdentity.sessionContext.sessionIssuer.type` AS `aws.cloudtrail.userIdentity.sessionContext.sessionIssuer.type`,
+    awsRegion AS `aws.cloudtrail.awsRegion`,
+    sourceIPAddress AS `aws.cloudtrail.sourceIPAddress`,
+    eventSource AS `aws.cloudtrail.eventSource`,
+    eventName AS `aws.cloudtrail.eventName`,
+    eventCategory AS `aws.cloudtrail.eventCategory`,
+    COUNT(*) AS `aws.cloudtrail.event_count`
+  FROM (
+    SELECT
+      CAST(eventTime AS TIMESTAMP) AS `@timestamp`,
+      userIdentity.`type` AS `userIdentity.type`,
+      userIdentity.`accountId` AS `userIdentity.accountId`,
+      userIdentity.sessionContext.sessionIssuer.userName AS `userIdentity.sessionContext.sessionIssuer.userName`,
+      userIdentity.sessionContext.sessionIssuer.arn AS `userIdentity.sessionContext.sessionIssuer.arn`,
+      userIdentity.sessionContext.sessionIssuer.type AS `userIdentity.sessionContext.sessionIssuer.type`,
+      awsRegion,
+      sourceIPAddress,
+      eventSource,
+      eventName,
+      eventCategory
+    FROM
+      aws_cloudtrail
+  )
+  GROUP BY
+    TUMBLE(`@timestamp`, '5 Minute'),
+    `userIdentity.type`,
+    `userIdentity.accountId`,
+    `userIdentity.sessionContext.sessionIssuer.userName`,
+    `userIdentity.sessionContext.sessionIssuer.arn`,
+    `userIdentity.sessionContext.sessionIssuer.type`,
+    awsRegion,
+    sourceIPAddress,
+    eventSource,
+    eventName,
+    eventCategory
+  WITH (
+    auto_refresh = true,
+    refresh_interval = '15 Minutes',
+    watermark_delay = '1 Minute',
+    checkpoint_location = 's3://nexus-flint-integration/checkpoints/loggroup_cloudtrail_1022tumble/
+  '
+  );
+  ```
+
+- The previous observation of missing partial data for auto refresh is because  that by adding the watermark delay, it will filter out the last time interval of the current batch, if the time window haven't fully reached that time interval, For our case, it should be `5 mins + 1 mins delay`. Previously, I found this issue, because the local environment I used for testing doesn't have stream data, so that I thought there were some data missing.
