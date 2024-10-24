@@ -29,3 +29,6 @@
 
 - s3://nexus-flint-integration/loggroup_cloudtrail/
   s3://nexus-flint-integration/checkpoints/loggroup_cloudtrail_${unique_id}/
+
+- s3://nexus-flint-integration/loggroup_waf/
+  s3://nexus-flint-integration/checkpoints/loggroup_waf_${unique_id}/
