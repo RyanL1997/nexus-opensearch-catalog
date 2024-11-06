@@ -8,7 +8,7 @@ SELECT
   protocol AS `aws.vpc.protocol`,
   dstPort AS `aws.vpc.dstport`,
   COUNT(*) AS `aws.vpc.total_count`,
-  SUM(bytes) AS `aws.vpc.total_bytes`,
+  SUM(bytes) / 1048576 AS `aws.vpc.total_bytes`,
   SUM(packets) AS `aws.vpc.total_packets`
 FROM (
   SELECT
