@@ -15,9 +15,9 @@ The integration process typically follows these sequential steps:
 
 ```mermaid
 flowchart LR
+  A[Storage of the Raw Logs] --> B[Table Creation]
   subgraph S3[S3]
     direction LR
-    A[Storage of the Raw Logs] --> B[Table Creation]
     B --> C[Materialized View or MV Index Creation]
     subgraph LogGroup[Log Group]
       direction LR
@@ -40,14 +40,14 @@ As the name implies, this type uses an S3 bucket to store raw log data. The inte
 In this type, the raw log data is already processed and available in tables through AWS CloudWatch Log Groups. With this setup, you can bypass the initial steps of raw log storage and table creation. Instead, you can directly begin the integration from the materialized view creation step, leveraging AWS CloudWatch Log Insights and OpenSearch Dashboards.
 
 - When to Use: Choose this type if you are working with CloudWatch Log Groups that already provide structured tables.
-- Key Note: Utilize AWS CloudWatch Console’s native Log Insights to streamline dashboard creation directly from the materialized views.
+- Key Note: Utilize AWS CloudWatch Console's native Log Insights to streamline dashboard creation directly from the materialized views.
 
 ## General Principles of OpenSearch Integration
 Before diving into the detailed steps of the integration process, it is important to understand some general principles that govern the flow. These principles ensure seamless functionality across the integration, from table creation to dashboard visualization.
 
 **1. Field Name Matching in Table and Materialized View (MV) Queries**
 
-- The fields in the table used for the integration must match the field names specified in the SELECT section of the MV creation query.
+- The fields in the table used for the integration must match the field names specified in the `SELECT` section of the MV creation query.
 
 **2. Table Name Alignment with MV Queries**
 
@@ -277,7 +277,7 @@ Proper validation ensures that the Materialized View (MV) index has been created
 
 **1. Verify MV Index Creation**
 
-Use the GET command to search the newly created index by its full name
+Use the `GET` command to search the newly created index by its full name
 ```
 GET flint_{datasource_name}_{database_name}_{user_given_flint_asset_name}_{flint_index_type}/_search
 ```
