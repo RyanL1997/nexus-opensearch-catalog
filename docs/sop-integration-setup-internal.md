@@ -16,21 +16,31 @@ The integration process typically follows these sequential steps:
 ```mermaid
 flowchart LR
   A[Storage of the Raw Logs] --> B[Table Creation]
-  subgraph S3[S3 Connection Integration]
+  subgraph S3[S3]
     direction LR
     B --> C[Materialized View or MV Index Creation]
-    C --> D[Dashboards Creation]
+    subgraph LogGroup[Log Group]
+      direction LR
+      C --> D[Dashboards Creation]
+    end
   end
 ```
 
-## Integration of S3 Connection in OpenSearch
+## Types of Integration (Based on Source)
 
-### S3 Connection Integration
+### 1. S3 Type Integration
 
 As the name implies, this type uses an S3 bucket to store raw log data. The integration setup strictly follows all the steps outlined above, beginning with raw log storage and proceeding through table creation, materialized view creation, and dashboard configuration.
 
 - When to Use: Choose this type if your raw logs are stored in S3 buckets and require processing from the ground up.
 - Key Note: Ensure proper IAM permissions are configured for OpenSearch to access and process the data from your S3 bucket.
+
+### 2. Log Group Type Integration (CloudWatch)
+
+In this type, the raw log data is already processed and available in tables through AWS CloudWatch Log Groups. With this setup, you can bypass the initial steps of raw log storage and table creation. Instead, you can directly begin the integration from the materialized view creation step, leveraging AWS CloudWatch Log Insights and OpenSearch Dashboards.
+
+- When to Use: Choose this type if you are working with CloudWatch Log Groups that already provide structured tables.
+- Key Note: Utilize AWS CloudWatch Console's native Log Insights to streamline dashboard creation directly from the materialized views.
 
 ## General Principles of OpenSearch Integration
 Before diving into the detailed steps of the integration process, it is important to understand some general principles that govern the flow. These principles ensure seamless functionality across the integration, from table creation to dashboard visualization.
@@ -63,7 +73,7 @@ Any mismatch in the above elements can lead to:
 
 ### Overview
 
-For the S3 Integration Setup, table creation is a critical first step in structuring your raw data into a usable format for downstream processing.
+If you are working on the **Log Group Setup**, you can skip this section, as table creation is not required. However, for the S3 Integration Setup, table creation is a critical first step in structuring your raw data into a usable format for downstream processing.
 
 ### Table Creation Query
 
@@ -161,7 +171,7 @@ SELECT * FROM {datasource_name}.{database_name}.{table_name} LIMIT 10;
 
 ## Materialized View (MV) Creation
 
-Materialized Views (MVs) play a critical role in optimizing query performance by pre-aggregating data into a format ready for analysis. The key principle is ensuring that the `SELECT` section of the MV query aligns precisely with the actual table columns.
+Materialized Views (MVs) play a critical role in optimizing query performance by pre-aggregating data into a format ready for analysis. Whether you're using an **OpenSearch S3 setup** (where you create the table yourself) or a **Log Group setup** (where tables are pre-existing), the key principle is ensuring that the SELECT section of the MV query aligns precisely with the actual table columns.
 
 ### MV Creation Query
 
@@ -210,7 +220,41 @@ WITH (
 
 ### Explanation of the Query
 
-Please reference to the [documentation link](https://github.com/opensearch-project/opensearch-spark/blob/main/docs/index.md) of OpenSearch Spark GitHub Repository
+**1. Query Components**
+
+- `CREATE MATERIALIZED VIEW`:
+  - Defines the creation of a materialized view with the specified name (`{materialized_view_name}`).
+- `TUMBLE` Function:
+  - Aggregates data into fixed time windows (e.g., every 5 minutes in this query).
+  - Syntax: `TUMBLE(time_column, interval)` where `interval` is the duration of the time window.
+- `@timestamp`:
+  - Represents the timestamp column derived from the raw data (start column converted to a timestamp).
+- Selected Fields:
+  - Aggregated Columns:
+    - `COUNT(*)`: Total number of logs within each time window.
+    - `SUM(bytes) / 1048576`: Total data volume in megabytes (conversion from bytes).
+    - `SUM(packets)`: Total packets transferred in each time window.
+  - Dimensions:
+    - `action`: Action taken (e.g., `ACCEPT` or `REJECT`).
+    - `srcAddr`, `dstAddr`: Source and destination IP addresses.
+    - `protocol`, `dstPort`: Network protocol and destination port.
+  - Subquery:
+    - Extracts raw data from {table_name}.
+    - Converts the `start` column (in Unix epoch format) to a human-readable timestamp using `CAST(FROM_UNIXTIME(start) AS TIMESTAMP)`.
+  - `GROUP BY`:
+    - Groups data by the time window (`TUMBLE`) and other dimensions like `action`, `srcAddr`, `dstAddr`, etc.
+
+**2. Refresh and Checkpoint Options**
+
+- `auto_refresh = true`:
+  - Enables automatic updates to the materialized view as new data arrives.
+  - default value is `false`. Automatically refresh the index if set to `true`. Otherwise, user has to trigger refresh by `REFRESH` statement manually.
+- `refresh_interval = '15 Minute'`:
+  - Specifies the frequency of refreshing the MV.
+- `watermark_delay = '1 Minute'`:
+  - Adds a delay to account for late-arriving data, ensuring completeness before aggregation.
+- `checkpoint_location`:
+  - The system reads from the checkpoint and processes only the new or updated data since the last scan.
 
 ### Key Principle
 
