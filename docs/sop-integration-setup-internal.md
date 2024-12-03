@@ -171,7 +171,7 @@ SELECT * FROM {datasource_name}.{database_name}.{table_name} LIMIT 10;
 
 ## Materialized View (MV) Creation
 
-Materialized Views (MVs) play a critical role in optimizing query performance by pre-aggregating data into a format ready for analysis. Whether you're using an **OpenSearch S3 setup** (where you create the table yourself) or a **Log Group setup** (where tables are pre-existing), the key principle is ensuring that the SELECT section of the MV query aligns precisely with the actual table columns.
+Materialized Views (MVs) play a critical role in optimizing query performance by pre-aggregating data into a format ready for analysis. Whether you're using an **OpenSearch S3 setup** (where you create the table yourself) or a **Log Group setup** (where tables are pre-existing), the key principle is ensuring that the `SELECT` section of the MV query aligns precisely with the actual table columns.
 
 ### MV Creation Query
 
