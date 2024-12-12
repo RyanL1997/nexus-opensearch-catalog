@@ -218,6 +218,28 @@ WITH (
 )
 ```
 
+### Index Fields Naming Conventions
+
+1. Use Dot-Notation for Hierarchical Fields  
+Represent nested structures using dot-separated notation.  
+Example: `aws.vpc.srcaddr` for `srcAddr` under the `vpc` namespace.
+
+2. Use Descriptive Prefixes for Namespacing  
+Prefix field names with a relevant category or namespace to avoid field name collisions.  
+Example: Use `aws.vpc` as a prefix for VPC flow log fields.
+
+3. Avoid Reserved Keywords  
+Ensure that field names do not conflict with SQL or OpenSearch reserved keywords (e.g., avoid select, from, timestamp).
+
+4. Consistent Abbreviations and Units  
+Standardize abbreviations (e.g., src for source, dst for destination).  
+Include units where applicable, such as total_bytes (in bytes) or total_mb (in megabytes).
+
+**Examples of Naming Conventions in Action**
+- Table Field: `srcAddr`
+- Mapped Field in MV: `aws.vpc.srcaddr`
+- Dashboard Reference: `aws.vpc.srcaddr`
+
 ### Explanation of the Query
 
 **1. Query Components**
