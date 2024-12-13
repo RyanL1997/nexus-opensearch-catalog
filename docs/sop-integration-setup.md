@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This document serves as a comprehensive guide for setting up and testing OpenSearch integrations. It outlines the key steps involved in the integration process and provides detailed instructions for creating and managing materialized views, as well as building and utilizing DQL visualizations. Additionally, it highlights common scenarios and challenges that users may encounter during these tasks, offering practical solutions and debugging strategies to address them effectively. By following this guide, users can streamline their workflows and ensure a smooth integration experience with OpenSearch.
+This document serves as a comprehensive guide for developers or users who are responsible for creating custom OpenSearch integrations and dashboards within their organization. Whether you're developing new materialized view indices, building custom visualizations, or setting up end-to-end data pipelines, this guide will walk you through the essential steps and best practices. It outlines the key steps involved in the integration process and provides detailed instructions for creating and managing materialized views, as well as building and utilizing DQL visualizations. Additionally, it highlights common scenarios and challenges that users may encounter during these tasks, offering practical solutions and debugging strategies to address them effectively. By following this guide, users can streamline their workflows and ensure a smooth integration experience with OpenSearch.
 
 ## How OpenSearch Integration Works
 
