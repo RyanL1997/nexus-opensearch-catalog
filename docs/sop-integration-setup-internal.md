@@ -40,7 +40,7 @@ As the name implies, this type uses an S3 bucket to store raw log data. The inte
 In this type, the raw log data is already processed and available in tables through AWS CloudWatch Log Groups. With this setup, you can bypass the initial steps of raw log storage and table creation. Instead, you can directly begin the integration from the materialized view creation step, leveraging AWS CloudWatch Log Insights and OpenSearch Dashboards.
 
 - When to Use: Choose this type if you are working with CloudWatch Log Groups that already provide structured tables.
-- Key Note: Utilize AWS CloudWatch Console's native Log Insights to streamline dashboard creation directly from the materialized views.
+- Key Note: Log Insights' Vended Dashboards in CloudWatch AWS Console.
 
 ## General Principles of OpenSearch Integration
 Before diving into the detailed steps of the integration process, it is important to understand some general principles that govern the flow. These principles ensure seamless functionality across the integration, from table creation to dashboard visualization.
