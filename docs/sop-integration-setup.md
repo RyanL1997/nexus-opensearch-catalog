@@ -422,7 +422,7 @@ Preparing for Publication
 
   - Test the integration end-to-end to confirm all components (e.g., dashboards, queries, indices) work as expected.
 
-For detailed instructions on how to upload and manage integrations in the OpenSearch Catalog, please refer to the OpenSearch Catalog Integration Documentation.
+For detailed instructions on how to upload and manage integrations in the OpenSearch Catalog, please refer to the [OpenSearch Catalog Integration Documentation](https://github.com/opensearch-project/opensearch-catalog/blob/main/docs/integrations/README.md).
 
 ## Reference
 
