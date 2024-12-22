@@ -252,6 +252,28 @@ WITH (
 )
 ```
 
+**Advantages:**  
+- Significantly reduces the MV index size, saving storage space and improving query performance.
+- Suitable for use cases that involve analyzing trends or patterns over time.
+
+**Disadvantages:**
+- May lose some detail by omitting data points that fall outside of the aggregation window.
+- Aggregated metrics may introduce inaccuracies in certain edge cases.
+
+### Recommendations for Choosing an Approach
+
+**Use a Full Index Query If:**
+- You need to retain all raw data for detailed analysis or auditing.
+- The volume of raw data is manageable, and storage is not a primary concern.
+- Your use case involves querying data at a granular level without summarization.
+
+**Use an Aggregated Query If:**
+- Storage efficiency is critical, and you want to minimize the size of the MV index.
+- You are analyzing trends, generating reports, or visualizing data over time.
+- Some loss of granularity is acceptable in exchange for improved query performance.
+
+By carefully evaluating your data requirements and balancing accuracy against storage and performance, you can select the most appropriate MV creation strategy for your use case.
+
 ### Construction of a MV Creation Query
 
 The following instructions are based on the **aggregated version of the MV query**, as it involves additional complexity compared to the full index query. While the full index query simply includes all fields without any aggregation, the aggregated version requires defining specific metrics and grouping data based on your analysis needs.
