@@ -163,10 +163,54 @@ SELECT * FROM {datasource_name}.{database_name}.{table_name} LIMIT 10;
 
 Materialized Views (MVs) play a critical role in optimizing query performance by pre-aggregating data into a format ready for analysis. The key principle is ensuring that the `SELECT` section of the MV query aligns precisely with the actual table columns.
 
-### MV Creation Query
+### Full Index Query vs. Aggregated Query in Materialized Views
 
-Below is an example of a Materialized View query tailored for processing aggregated VPC flow log data.
+When creating a Materialized View (MV) in OpenSearch, it is important to decide whether the index should contain the full details of the raw data or an aggregated version of the data. This choice depends on your use case, the type of analysis you plan to perform, and the trade-offs between data accuracy and storage efficiency.
 
+**1. Full Index Query**  
+A full index query fetches every row from the raw data without applying any aggregation. Each field in the raw table is represented as-is in the MV index, providing a highly detailed and accurate copy of the source data.
+
+**Example Query:**
+```sql
+CREATE MATERIALIZED VIEW {materialized_view_name} AS
+  SELECT
+    CAST(IFNULL(srcPort, 0) AS LONG) AS `aws.vpc.srcport`,
+    CAST(IFNULL(srcAddr, '0.0.0.0') AS STRING) AS `aws.vpc.srcaddr`,
+    CAST(IFNULL(interfaceId, 'Unknown') AS STRING) AS `aws.vpc.src-interface_uid`,
+    CAST(IFNULL(dstPort, 0) AS LONG) AS `aws.vpc.dstport`,
+    CAST(IFNULL(dstAddr, '0.0.0.0') AS STRING) AS `aws.vpc.dstaddr`,
+    CAST(IFNULL(packets, 0) AS LONG) AS `aws.vpc.packets`,
+    CAST(IFNULL(bytes, 0) AS LONG) AS `aws.vpc.bytes`,
+    CAST(FROM_UNIXTIME(start) AS TIMESTAMP) AS `@timestamp`,
+    CAST(FROM_UNIXTIME(start) AS TIMESTAMP) AS `start_time`,
+    CAST(FROM_UNIXTIME(start) AS TIMESTAMP) AS `interval_start_time`,
+    CAST(FROM_UNIXTIME(`end`) AS TIMESTAMP) AS `end_time`,
+    CAST(IFNULL(logStatus, 'Unknown') AS STRING) AS `aws.vpc.status_code`,
+    CAST(IFNULL(action, 'Unknown') AS STRING) AS `aws.vpc.action`,
+    CAST(IFNULL(accountId, 'Unknown') AS STRING) AS `aws.vpc.account-id`
+  FROM
+    {table_name}
+WITH (
+  auto_refresh = true,
+  refresh_interval = '15 Minute',
+  checkpoint_location = '{s3_checkpoint_location}',
+  watermark_delay = '1 Minute',
+  extra_options = '{ "{table_name}": { "maxFilesPerTrigger": "10" }}'
+)
+```
+
+**Advantages:**
+- Provides a detailed, row-by-row copy of the raw data.
+- Ensures complete accuracy by preserving all information from the source.
+
+**Disadvantages:**
+- Results in a larger MV index size, which can consume significant storage.
+- May increase query execution time if the MV index contains a large volume of data.
+
+**2. Aggregated Query**  
+An aggregated query groups data by specific dimensions and applies metrics like sums, counts, or averages to create a summarized view of the raw data. This reduces the size of the MV index while retaining the most relevant insights.
+
+**Example Query:**
 ```sql
 CREATE MATERIALIZED VIEW {materialized_view_name}
 AS
@@ -207,6 +251,10 @@ WITH (
   checkpoint_location = '{s3_checkpoint_location}'
 )
 ```
+
+### Construction of a MV Creation Query
+
+The following instructions are based on the **aggregated version of the MV query**, as it involves additional complexity compared to the full index query. While the full index query simply includes all fields without any aggregation, the aggregated version requires defining specific metrics and grouping data based on your analysis needs.
 
 ### Index Fields Naming Conventions
 
