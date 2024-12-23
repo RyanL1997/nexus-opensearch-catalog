@@ -260,6 +260,8 @@ WITH (
 - May lose some detail by omitting data points that fall outside of the aggregation window.
 - Aggregated metrics may introduce inaccuracies in certain edge cases.
 
+**Important Note :** Aggregated Materialized Views work well for summarizing data but may not be suitable for high-cardinality fields. High-cardinality fields, such as unique user IDs or IP addresses with numerous distinct values, can result in excessively large indices or performance issues. In such cases, a full index query may be a better choice to retain all details.
+
 ### Recommendations for Choosing an Approach
 
 **Use a Full Index Query If:**
