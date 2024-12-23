@@ -270,6 +270,7 @@ WITH (
 - Your use case involves querying data at a granular level without summarization.
 
 **Use an Aggregated Query If:**
+- **High-cardinality fields are not critical to your analysis.** Aggregated queries may not perform well or could result in excessively large indices when working with high-cardinality fields (e.g., unique user IDs, IP addresses).
 - Storage efficiency is critical, and you want to minimize the size of the MV index.
 - You are analyzing trends, generating reports, or visualizing data over time.
 - Some loss of granularity is acceptable in exchange for improved query performance.
