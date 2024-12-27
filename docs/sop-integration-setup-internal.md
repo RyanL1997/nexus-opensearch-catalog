@@ -63,4 +63,4 @@ flowchart LR
 
 ## Reference
 
-For all other steps, refer to the open-source SOP as the primary guide. This Log Group-based document is intended to reduce redundancy and focus solely on AWS-specific adjustments.
+For all other steps, refer to the [open-source SOP](https://github.com/RyanL1997/nexus-opensearch-catalog/blob/main/docs/sop-integration-setup.md) as the primary guide. This Log Group-based document is intended to reduce redundancy and focus solely on AWS-specific adjustments.
