@@ -1,0 +1,1708 @@
+[
+  {
+    "firewall_name": "use1-fw",
+    "availability_zone": "us-east-1a",
+    "event_timestamp": "1740408108",
+    "event": {
+      "tcp": {
+        "tcp_flags": "13",
+        "syn": true,
+        "fin": true,
+        "ack": true
+      },
+      "app_proto": "unknown",
+      "src_ip": "10.170.18.235",
+      "src_port": 60448,
+      "netflow": {
+        "pkts": 21,
+        "bytes": 1208,
+        "start": "2025-02-24T14:39:44.200427+0000",
+        "end": "2025-02-24T14:40:47.636922+0000",
+        "age": 63,
+        "min_ttl": 63,
+        "max_ttl": 63
+      },
+      "event_type": "netflow",
+      "flow_id": 16402963969408,
+      "dest_ip": "8.8.8.8",
+      "proto": "TCP",
+      "dest_port": 443,
+      "timestamp": "2025-02-24T14:41:48.404578+0000"
+    }
+  },
+  {
+    "firewall_name": "use2-fw",
+    "availability_zone": "us-east-1a",
+    "event_timestamp": "1740407457",
+    "event": {
+      "app_proto": "tls",
+      "src_ip": "10.170.18.235",
+      "src_port": 36434,
+      "event_type": "alert",
+      "alert": {
+        "severity": 3,
+        "signature_id": 4,
+        "rev": 0,
+        "signature": "aws:alert_established action",
+        "action": "blocked",
+        "category": ""
+      },
+      "flow_id": 328474246651493,
+      "dest_ip": "54.146.42.172",
+      "proto": "TCP",
+      "verdict": {
+        "action": "drop"
+      },
+      "tls": {
+        "sni": "checkip.amazonaws.com",
+        "version": "UNDETERMINED"
+      },
+      "dest_port": 443,
+      "pkt_src": "geneve encapsulation",
+      "timestamp": "2025-02-24T14:30:57.933410+0000",
+      "direction": "to_server"
+    }
+  },
+  {
+    "firewall_name": "use3-fw",
+    "availability_zone": "us-east-1a",
+    "event_timestamp": "1740407564",
+    "event": {
+      "tcp": {
+        "tcp_flags": "17",
+        "syn": true,
+        "fin": true,
+        "rst": true,
+        "ack": true
+      },
+      "app_proto": "http",
+      "src_ip": "54.242.115.112",
+      "src_port": 80,
+      "netflow": {
+        "pkts": 11,
+        "bytes": 568,
+        "start": "2025-02-24T14:30:48.720252+0000",
+        "end": "2025-02-24T14:31:42.291293+0000",
+        "age": 54,
+        "min_ttl": 49,
+        "max_ttl": 252
+      },
+      "event_type": "netflow",
+      "flow_id": 278710129222792,
+      "dest_ip": "10.170.18.235",
+      "proto": "TCP",
+      "dest_port": 59336,
+      "timestamp": "2025-02-24T14:32:44.925034+0000"
+    }
+  },
+  {
+    "firewall_name": "use4-fw",
+    "availability_zone": "us-east-1a",
+    "event_timestamp": "1740408108",
+    "event": {
+      "tcp": {
+        "tcp_flags": "13",
+        "syn": true,
+        "fin": true,
+        "ack": true
+      },
+      "app_proto": "unknown",
+      "src_ip": "8.8.8.8",
+      "src_port": 443,
+      "netflow": {
+        "pkts": 11,
+        "bytes": 580,
+        "start": "2025-02-24T14:39:44.200427+0000",
+        "end": "2025-02-24T14:40:47.636922+0000",
+        "age": 63,
+        "min_ttl": 117,
+        "max_ttl": 248
+      },
+      "event_type": "netflow",
+      "flow_id": 16402963969408,
+      "dest_ip": "10.170.18.235",
+      "proto": "TCP",
+      "dest_port": 60448,
+      "timestamp": "2025-02-24T14:41:48.404721+0000"
+    }
+  },
+  {
+    "firewall_name": "use5-fw",
+    "availability_zone": "us-east-1a",
+    "event_timestamp": "1740407448",
+    "event": {
+      "app_proto": "http",
+      "src_ip": "10.170.18.235",
+      "src_port": 59336,
+      "event_type": "alert",
+      "alert": {
+        "severity": 3,
+        "signature_id": 4,
+        "rev": 0,
+        "signature": "aws:alert_established action",
+        "action": "blocked",
+        "category": ""
+      },
+      "flow_id": 278710129222792,
+      "dest_ip": "54.242.115.112",
+      "proto": "TCP",
+      "verdict": {
+        "action": "drop"
+      },
+      "http": {
+        "hostname": "checkip.amazonaws.com",
+        "url": "/",
+        "http_user_agent": "curl/8.5.0",
+        "http_method": "GET",
+        "protocol": "HTTP/1.1",
+        "length": 0
+      },
+      "dest_port": 80,
+      "pkt_src": "geneve encapsulation",
+      "timestamp": "2025-02-24T14:30:48.723575+0000",
+      "direction": "to_server"
+    }
+  },
+  {
+    "firewall_name": "use6-fw",
+    "availability_zone": "us-east-1a",
+    "event_timestamp": "1740407424",
+    "event": {
+      "dns": {
+        "query": [
+          {
+            "type": "query",
+            "id": 49938,
+            "rrname": "checkip.amazonaws.com",
+            "rrtype": "A",
+            "tx_id": 0,
+            "opcode": 0
+          }
+        ]
+      },
+      "app_proto": "dns",
+      "src_ip": "10.170.18.235",
+      "src_port": 41655,
+      "event_type": "alert",
+      "alert": {
+        "severity": 3,
+        "signature_id": 3,
+        "rev": 0,
+        "signature": "aws:alert_established action",
+        "action": "blocked",
+        "category": ""
+      },
+      "flow_id": 125463154376723,
+      "dest_ip": "8.8.8.8",
+      "proto": "UDP",
+      "verdict": {
+        "action": "drop"
+      },
+      "dest_port": 53,
+      "pkt_src": "geneve encapsulation",
+      "timestamp": "2025-02-24T14:30:24.553499+0000",
+      "direction": "to_server"
+    }
+  },
+  {
+    "firewall_name": "use13-fw",
+    "availability_zone": "us-east-1a",
+    "event_timestamp": "1740407547",
+    "event": {
+      "src_ip": "10.170.18.235",
+      "src_port": 41655,
+      "netflow": {
+        "pkts": 1,
+        "bytes": 90,
+        "start": "2025-02-24T14:30:24.553499+0000",
+        "end": "2025-02-24T14:30:24.553499+0000",
+        "age": 0,
+        "min_ttl": 63,
+        "max_ttl": 63
+      },
+      "event_type": "netflow",
+      "flow_id": 125463154376723,
+      "dest_ip": "8.8.8.8",
+      "proto": "UDP",
+      "app_proto": "dns",
+      "dest_port": 53,
+      "timestamp": "2025-02-24T14:32:27.288559+0000"
+    }
+  },
+  {
+    "firewall_name": "use7-fw",
+    "availability_zone": "us-east-1a",
+    "event_timestamp": "1740407564",
+    "event": {
+      "tcp": {
+        "tcp_flags": "1b",
+        "syn": true,
+        "fin": true,
+        "psh": true,
+        "ack": true
+      },
+      "app_proto": "http",
+      "src_ip": "10.170.18.235",
+      "src_port": 59336,
+      "netflow": {
+        "pkts": 22,
+        "bytes": 2088,
+        "start": "2025-02-24T14:30:48.720252+0000",
+        "end": "2025-02-24T14:31:42.291293+0000",
+        "age": 54,
+        "min_ttl": 63,
+        "max_ttl": 63
+      },
+      "event_type": "netflow",
+      "flow_id": 278710129222792,
+      "dest_ip": "54.242.115.112",
+      "proto": "TCP",
+      "dest_port": 80,
+      "timestamp": "2025-02-24T14:32:44.925012+0000"
+    }
+  },
+  {
+    "firewall_name": "use8-fw",
+    "availability_zone": "us-east-1a",
+    "event_timestamp": "1740407403",
+    "event": {
+      "icmp_type": 8,
+      "src_ip": "10.170.18.235",
+      "src_port": 0,
+      "event_type": "alert",
+      "alert": {
+        "severity": 3,
+        "signature_id": 2,
+        "rev": 0,
+        "signature": "aws:alert_established action",
+        "action": "blocked",
+        "category": ""
+      },
+      "flow_id": 955854500244454,
+      "dest_ip": "8.8.8.8",
+      "proto": "ICMP",
+      "verdict": {
+        "action": "drop"
+      },
+      "icmp_code": 0,
+      "dest_port": 0,
+      "pkt_src": "geneve encapsulation",
+      "timestamp": "2025-02-24T14:30:03.681304+0000",
+      "direction": "to_server"
+    }
+  },
+  {
+    "firewall_name": "use9-fw",
+    "availability_zone": "us-east-1a",
+    "event_timestamp": "1740407532",
+    "event": {
+      "src_ip": "10.170.18.235",
+      "icmp_type": 8,
+      "netflow": {
+        "pkts": 9,
+        "bytes": 756,
+        "start": "2025-02-24T14:30:03.681304+0000",
+        "end": "2025-02-24T14:30:11.857480+0000",
+        "age": 8,
+        "min_ttl": 63,
+        "max_ttl": 63
+      },
+      "event_type": "netflow",
+      "flow_id": 955854500244454,
+      "dest_ip": "8.8.8.8",
+      "proto": "ICMP",
+      "icmp_code": 0,
+      "app_proto": "unknown",
+      "timestamp": "2025-02-24T14:32:12.475216+0000"
+    }
+  },
+  {
+    "firewall_name": "use10-fw",
+    "availability_zone": "us-east-1a",
+    "event_timestamp": "1740407584",
+    "event": {
+      "tcp": {
+        "tcp_flags": "13",
+        "syn": true,
+        "fin": true,
+        "ack": true
+      },
+      "app_proto": "tls",
+      "src_ip": "54.146.42.172",
+      "src_port": 443,
+      "netflow": {
+        "pkts": 11,
+        "bytes": 580,
+        "start": "2025-02-24T14:30:57.928446+0000",
+        "end": "2025-02-24T14:32:01.964015+0000",
+        "age": 64,
+        "min_ttl": 240,
+        "max_ttl": 252
+      },
+      "event_type": "netflow",
+      "flow_id": 328474246651493,
+      "dest_ip": "10.170.18.235",
+      "proto": "TCP",
+      "dest_port": 36434,
+      "timestamp": "2025-02-24T14:33:04.190835+0000"
+    }
+  },
+  {
+    "firewall_name": "use11-fw",
+    "availability_zone": "us-east-1a",
+    "event_timestamp": "1740407994",
+    "event": {
+      "src_ip": "10.170.18.235",
+      "src_port": 60448,
+      "event_type": "alert",
+      "alert": {
+        "severity": 3,
+        "signature_id": 4,
+        "rev": 0,
+        "signature": "aws:alert_established action",
+        "action": "blocked",
+        "category": ""
+      },
+      "flow_id": 16402963969408,
+      "dest_ip": "8.8.8.8",
+      "proto": "TCP",
+      "verdict": {
+        "action": "drop"
+      },
+      "dest_port": 443,
+      "pkt_src": "geneve encapsulation",
+      "timestamp": "2025-02-24T14:39:54.227071+0000",
+      "direction": "to_server"
+    }
+  },
+  {
+    "firewall_name": "use12-fw",
+    "availability_zone": "us-east-1a",
+    "event_timestamp": "1740407584",
+    "event": {
+      "tcp": {
+        "tcp_flags": "1b",
+        "syn": true,
+        "fin": true,
+        "psh": true,
+        "ack": true
+      },
+      "app_proto": "tls",
+      "src_ip": "10.170.18.235",
+      "src_port": 36434,
+      "netflow": {
+        "pkts": 23,
+        "bytes": 6482,
+        "start": "2025-02-24T14:30:57.928446+0000",
+        "end": "2025-02-24T14:32:01.964015+0000",
+        "age": 64,
+        "min_ttl": 63,
+        "max_ttl": 63
+      },
+      "event_type": "netflow",
+      "flow_id": 328474246651493,
+      "dest_ip": "54.146.42.172",
+      "proto": "TCP",
+      "dest_port": 443,
+      "timestamp": "2025-02-24T14:33:04.190717+0000"
+    }
+  },
+  {
+    "firewall_name": "NetworkFirewallSetup-firewall",
+    "availability_zone": "us-east-1a",
+    "event_timestamp": "1743126304",
+    "event": {
+        "tcp": {
+            "tcp_flags": "02",
+            "syn": true
+        },
+        "app_proto": "unknown",
+        "src_ip": "45.82.78.100",
+        "src_port": 52610,
+        "netflow": {
+            "pkts": 1,
+            "bytes": 44,
+            "start": "2025-03-28T01:39:13.848296+0000",
+            "end": "2025-03-28T01:39:13.848296+0000",
+            "age": 0,
+            "min_ttl": 237,
+            "max_ttl": 237
+        },
+        "event_type": "netflow",
+        "flow_id": 547181126614785,
+        "dest_ip": "10.2.1.120",
+        "proto": "TCP",
+        "dest_port": 8085,
+        "timestamp": "2025-03-28T01:45:04.462478+0000"
+    }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743126311",
+  "event": {
+      "tcp": {
+          "tcp_flags": "02",
+          "syn": true
+      },
+      "app_proto": "unknown",
+      "src_ip": "20.65.193.116",
+      "src_port": 45550,
+      "netflow": {
+          "pkts": 1,
+          "bytes": 40,
+          "start": "2025-03-28T01:39:20.417619+0000",
+          "end": "2025-03-28T01:39:20.417619+0000",
+          "age": 0,
+          "min_ttl": 242,
+          "max_ttl": 242
+      },
+      "event_type": "netflow",
+      "flow_id": 104811913693211,
+      "dest_ip": "10.2.1.120",
+      "proto": "TCP",
+      "dest_port": 1433,
+      "timestamp": "2025-03-28T01:45:11.086998+0000"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743126321",
+  "event": {
+      "tcp": {
+          "tcp_flags": "02",
+          "syn": true
+      },
+      "app_proto": "unknown",
+      "src_ip": "93.174.93.12",
+      "src_port": 60000,
+      "netflow": {
+          "pkts": 1,
+          "bytes": 40,
+          "start": "2025-03-28T01:39:29.169770+0000",
+          "end": "2025-03-28T01:39:29.169770+0000",
+          "age": 0,
+          "min_ttl": 242,
+          "max_ttl": 242
+      },
+      "event_type": "netflow",
+      "flow_id": 447682485579242,
+      "dest_ip": "10.2.1.120",
+      "proto": "TCP",
+      "dest_port": 80,
+      "timestamp": "2025-03-28T01:45:21.663786+0000"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743126325",
+  "event": {
+      "tcp": {
+          "tcp_flags": "02",
+          "syn": true
+      },
+      "app_proto": "unknown",
+      "src_ip": "35.203.210.146",
+      "src_port": 56973,
+      "netflow": {
+          "pkts": 1,
+          "bytes": 44,
+          "start": "2025-03-28T01:39:34.501658+0000",
+          "end": "2025-03-28T01:39:34.501658+0000",
+          "age": 0,
+          "min_ttl": 248,
+          "max_ttl": 248
+      },
+      "event_type": "netflow",
+      "flow_id": 1873131650187037,
+      "dest_ip": "10.2.1.120",
+      "proto": "TCP",
+      "dest_port": 21240,
+      "timestamp": "2025-03-28T01:45:25.442098+0000"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743126328",
+  "event": {
+      "tcp": {
+          "tcp_flags": "02",
+          "syn": true
+      },
+      "app_proto": "unknown",
+      "src_ip": "64.62.156.159",
+      "src_port": 39346,
+      "netflow": {
+          "pkts": 1,
+          "bytes": 40,
+          "start": "2025-03-28T01:39:37.064205+0000",
+          "end": "2025-03-28T01:39:37.064205+0000",
+          "age": 0,
+          "min_ttl": 238,
+          "max_ttl": 238
+      },
+      "event_type": "netflow",
+      "flow_id": 557233811966963,
+      "dest_ip": "10.2.1.120",
+      "proto": "TCP",
+      "dest_port": 61616,
+      "timestamp": "2025-03-28T01:45:28.477687+0000"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743126331",
+  "event": {
+      "tcp": {
+          "tcp_flags": "02",
+          "syn": true
+      },
+      "app_proto": "unknown",
+      "src_ip": "35.203.210.130",
+      "src_port": 53809,
+      "netflow": {
+          "pkts": 1,
+          "bytes": 44,
+          "start": "2025-03-28T01:39:39.600149+0000",
+          "end": "2025-03-28T01:39:39.600149+0000",
+          "age": 0,
+          "min_ttl": 246,
+          "max_ttl": 246
+      },
+      "event_type": "netflow",
+      "flow_id": 888773859935238,
+      "dest_ip": "10.2.1.120",
+      "proto": "TCP",
+      "dest_port": 21341,
+      "timestamp": "2025-03-28T01:45:31.782514+0000"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743126333",
+  "event": {
+      "tcp": {
+          "tcp_flags": "02",
+          "syn": true
+      },
+      "app_proto": "unknown",
+      "src_ip": "78.153.140.151",
+      "src_port": 47716,
+      "netflow": {
+          "pkts": 2,
+          "bytes": 120,
+          "start": "2025-03-28T01:39:41.447702+0000",
+          "end": "2025-03-28T01:39:42.448997+0000",
+          "age": 1,
+          "min_ttl": 54,
+          "max_ttl": 54
+      },
+      "event_type": "netflow",
+      "flow_id": 1641394357351211,
+      "dest_ip": "10.2.1.120",
+      "proto": "TCP",
+      "dest_port": 80,
+      "timestamp": "2025-03-28T01:45:33.536763+0000"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743126334",
+  "event": {
+      "tcp": {
+          "tcp_flags": "02",
+          "syn": true
+      },
+      "app_proto": "unknown",
+      "src_ip": "78.153.140.151",
+      "src_port": 47712,
+      "netflow": {
+          "pkts": 2,
+          "bytes": 120,
+          "start": "2025-03-28T01:39:41.449654+0000",
+          "end": "2025-03-28T01:39:42.451027+0000",
+          "age": 1,
+          "min_ttl": 52,
+          "max_ttl": 52
+      },
+      "event_type": "netflow",
+      "flow_id": 1649777342511950,
+      "dest_ip": "10.2.1.120",
+      "proto": "TCP",
+      "dest_port": 80,
+      "timestamp": "2025-03-28T01:45:34.548607+0000"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743126335",
+  "event": {
+      "tcp": {
+          "tcp_flags": "02",
+          "syn": true
+      },
+      "app_proto": "unknown",
+      "src_ip": "79.124.58.194",
+      "src_port": 53735,
+      "netflow": {
+          "pkts": 1,
+          "bytes": 44,
+          "start": "2025-03-28T01:39:42.888109+0000",
+          "end": "2025-03-28T01:39:42.888109+0000",
+          "age": 0,
+          "min_ttl": 244,
+          "max_ttl": 244
+      },
+      "event_type": "netflow",
+      "flow_id": 1844075182491440,
+      "dest_ip": "10.2.1.120",
+      "proto": "TCP",
+      "dest_port": 20869,
+      "timestamp": "2025-03-28T01:45:35.369723+0000"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743126336",
+  "event": {
+      "tcp": {
+          "tcp_flags": "02",
+          "syn": true
+      },
+      "app_proto": "unknown",
+      "src_ip": "193.163.125.30",
+      "src_port": 40630,
+      "netflow": {
+          "pkts": 1,
+          "bytes": 44,
+          "start": "2025-03-28T01:39:45.653901+0000",
+          "end": "2025-03-28T01:39:45.653901+0000",
+          "age": 0,
+          "min_ttl": 245,
+          "max_ttl": 245
+      },
+      "event_type": "netflow",
+      "flow_id": 556684671783283,
+      "dest_ip": "10.2.1.120",
+      "proto": "TCP",
+      "dest_port": 11211,
+      "timestamp": "2025-03-28T01:45:36.841863+0000"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743126336",
+  "event": {
+      "tcp": {
+          "tcp_flags": "02",
+          "syn": true
+      },
+      "app_proto": "unknown",
+      "src_ip": "5.188.206.54",
+      "src_port": 8080,
+      "netflow": {
+          "pkts": 1,
+          "bytes": 40,
+          "start": "2025-03-28T01:39:45.262005+0000",
+          "end": "2025-03-28T01:39:45.262005+0000",
+          "age": 0,
+          "min_ttl": 243,
+          "max_ttl": 243
+      },
+      "event_type": "netflow",
+      "flow_id": 562354381152995,
+      "dest_ip": "10.2.1.120",
+      "proto": "TCP",
+      "dest_port": 2084,
+      "timestamp": "2025-03-28T01:45:36.381457+0000"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743126342",
+  "event": {
+      "tcp": {
+          "tcp_flags": "02",
+          "syn": true
+      },
+      "app_proto": "unknown",
+      "src_ip": "162.216.150.204",
+      "src_port": 50702,
+      "netflow": {
+          "pkts": 1,
+          "bytes": 44,
+          "start": "2025-03-28T01:39:51.182431+0000",
+          "end": "2025-03-28T01:39:51.182431+0000",
+          "age": 0,
+          "min_ttl": 248,
+          "max_ttl": 248
+      },
+      "event_type": "netflow",
+      "flow_id": 2190910186094280,
+      "dest_ip": "10.2.1.120",
+      "proto": "TCP",
+      "dest_port": 7878,
+      "timestamp": "2025-03-28T01:45:42.643034+0000"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743126349",
+  "event": {
+      "src_ip": "10.2.1.120",
+      "src_port": 47557,
+      "netflow": {
+          "pkts": 1,
+          "bytes": 76,
+          "start": "2025-03-28T01:43:46.376808+0000",
+          "end": "2025-03-28T01:43:46.451037+0000",
+          "age": 0,
+          "min_ttl": 254,
+          "max_ttl": 254
+      },
+      "event_type": "netflow",
+      "flow_id": 773954211427861,
+      "dest_ip": "104.167.215.195",
+      "proto": "UDP",
+      "app_proto": "ntp",
+      "dest_port": 123,
+      "timestamp": "2025-03-28T01:45:49.535017+0000"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743126349",
+  "event": {
+      "src_ip": "104.167.215.195",
+      "src_port": 123,
+      "netflow": {
+          "pkts": 1,
+          "bytes": 76,
+          "start": "2025-03-28T01:43:46.376808+0000",
+          "end": "2025-03-28T01:43:46.451037+0000",
+          "age": 0,
+          "min_ttl": 47,
+          "max_ttl": 47
+      },
+      "event_type": "netflow",
+      "flow_id": 773954211427861,
+      "dest_ip": "10.2.1.120",
+      "proto": "UDP",
+      "app_proto": "ntp",
+      "dest_port": 47557,
+      "timestamp": "2025-03-28T01:45:49.535051+0000"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743126356",
+  "event": {
+      "tcp": {
+          "tcp_flags": "02",
+          "syn": true
+      },
+      "app_proto": "unknown",
+      "src_ip": "198.235.24.126",
+      "src_port": 51019,
+      "netflow": {
+          "pkts": 1,
+          "bytes": 44,
+          "start": "2025-03-28T01:40:03.426738+0000",
+          "end": "2025-03-28T01:40:03.426738+0000",
+          "age": 0,
+          "min_ttl": 247,
+          "max_ttl": 247
+      },
+      "event_type": "netflow",
+      "flow_id": 988401806264510,
+      "dest_ip": "10.2.1.120",
+      "proto": "TCP",
+      "dest_port": 2080,
+      "timestamp": "2025-03-28T01:45:56.617786+0000"
+  }
+},
+{
+    "firewall_name": "NetworkFirewallSetup-firewall",
+    "availability_zone": "us-east-1a",
+    "event_timestamp": "1743126371",
+    "event": {
+        "tcp": {
+            "tcp_flags": "02",
+            "syn": true
+        },
+        "app_proto": "unknown",
+        "src_ip": "154.212.141.199",
+        "src_port": 40672,
+        "netflow": {
+            "pkts": 1,
+            "bytes": 44,
+            "start": "2025-03-28T01:40:20.181218+0000",
+            "end": "2025-03-28T01:40:20.181218+0000",
+            "age": 0,
+            "min_ttl": 231,
+            "max_ttl": 231
+        },
+        "event_type": "netflow",
+        "flow_id": 1341277142665002,
+        "dest_ip": "10.2.1.120",
+        "proto": "TCP",
+        "dest_port": 9000,
+        "timestamp": "2025-03-28T01:46:11.794494+0000"
+    }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743126375",
+  "event": {
+      "tcp": {
+          "tcp_flags": "02",
+          "syn": true
+      },
+      "app_proto": "unknown",
+      "src_ip": "207.90.244.14",
+      "src_port": 26200,
+      "netflow": {
+          "pkts": 1,
+          "bytes": 44,
+          "start": "2025-03-28T01:40:24.573216+0000",
+          "end": "2025-03-28T01:40:24.573216+0000",
+          "age": 0,
+          "min_ttl": 117,
+          "max_ttl": 117
+      },
+      "event_type": "netflow",
+      "flow_id": 210145431308752,
+      "dest_ip": "10.2.1.120",
+      "proto": "TCP",
+      "dest_port": 7005,
+      "timestamp": "2025-03-28T01:46:15.841780+0000"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743126383",
+  "event": {
+      "tcp": {
+          "tcp_flags": "02",
+          "syn": true
+      },
+      "app_proto": "unknown",
+      "src_ip": "79.124.58.194",
+      "src_port": 53719,
+      "netflow": {
+          "pkts": 1,
+          "bytes": 44,
+          "start": "2025-03-28T01:40:30.881997+0000",
+          "end": "2025-03-28T01:40:30.881997+0000",
+          "age": 0,
+          "min_ttl": 243,
+          "max_ttl": 243
+      },
+      "event_type": "netflow",
+      "flow_id": 1817825673740910,
+      "dest_ip": "10.2.1.120",
+      "proto": "TCP",
+      "dest_port": 28133,
+      "timestamp": "2025-03-28T01:46:23.388167+0000"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743126388",
+  "event": {
+      "tcp": {
+          "tcp_flags": "02",
+          "syn": true
+      },
+      "app_proto": "unknown",
+      "src_ip": "162.216.150.191",
+      "src_port": 54414,
+      "netflow": {
+          "pkts": 1,
+          "bytes": 44,
+          "start": "2025-03-28T01:40:37.931289+0000",
+          "end": "2025-03-28T01:40:37.931289+0000",
+          "age": 0,
+          "min_ttl": 245,
+          "max_ttl": 245
+      },
+      "event_type": "netflow",
+      "flow_id": 1466581498063598,
+      "dest_ip": "10.2.1.120",
+      "proto": "TCP",
+      "dest_port": 47804,
+      "timestamp": "2025-03-28T01:46:28.447818+0000"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743126403",
+  "event": {
+      "tcp": {
+          "tcp_flags": "02",
+          "syn": true
+      },
+      "app_proto": "unknown",
+      "src_ip": "165.154.41.50",
+      "src_port": 45585,
+      "netflow": {
+          "pkts": 1,
+          "bytes": 60,
+          "start": "2025-03-28T01:40:51.191089+0000",
+          "end": "2025-03-28T01:40:51.191089+0000",
+          "age": 0,
+          "min_ttl": 35,
+          "max_ttl": 35
+      },
+      "event_type": "netflow",
+      "flow_id": 1102198759813151,
+      "dest_ip": "10.2.1.120",
+      "proto": "TCP",
+      "dest_port": 11191,
+      "timestamp": "2025-03-28T01:46:43.160372+0000"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743199210",
+  "event": {
+      "tx_id": 0,
+      "app_proto": "tls",
+      "src_ip": "10.2.1.120",
+      "src_port": 46736,
+      "event_type": "alert",
+      "alert": {
+          "severity": 1,
+          "signature_id": 5,
+          "rev": 1,
+          "signature": "not matching any TLS allowlisted FQDNs",
+          "action": "blocked",
+          "category": ""
+      },
+      "flow_id": 686450381468061,
+      "dest_ip": "52.216.211.88",
+      "proto": "TCP",
+      "verdict": {
+          "action": "drop"
+      },
+      "tls": {
+          "sni": "s3.us-east-1.amazonaws.com",
+          "version": "UNDETERMINED"
+      },
+      "dest_port": 443,
+      "pkt_src": "geneve encapsulation",
+      "timestamp": "2025-03-28T22:00:10.096649+0000",
+      "direction": "to_server"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743196105",
+  "event": {
+      "icmp_type": 8,
+      "src_ip": "51.158.113.168",
+      "src_port": 0,
+      "event_type": "alert",
+      "alert": {
+          "severity": 3,
+          "signature_id": 1,
+          "rev": 0,
+          "signature": "",
+          "action": "allowed",
+          "category": ""
+      },
+      "flow_id": 552803747477431,
+      "dest_ip": "10.2.1.120",
+      "proto": "ICMP",
+      "verdict": {
+          "action": "alert"
+      },
+      "icmp_code": 0,
+      "dest_port": 0,
+      "pkt_src": "geneve encapsulation",
+      "timestamp": "2025-03-28T21:08:25.521925+0000",
+      "direction": "to_server"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743196674",
+  "event": {
+      "icmp_type": 8,
+      "src_ip": "162.62.58.193",
+      "src_port": 0,
+      "event_type": "alert",
+      "alert": {
+          "severity": 3,
+          "signature_id": 1,
+          "rev": 0,
+          "signature": "",
+          "action": "allowed",
+          "category": ""
+      },
+      "flow_id": 790173861124876,
+      "dest_ip": "10.2.1.120",
+      "proto": "ICMP",
+      "verdict": {
+          "action": "alert"
+      },
+      "icmp_code": 0,
+      "dest_port": 0,
+      "pkt_src": "geneve encapsulation",
+      "timestamp": "2025-03-28T21:17:54.970408+0000",
+      "direction": "to_server"
+  }
+},{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743196816",
+  "event": {
+      "icmp_type": 8,
+      "src_ip": "54.223.155.229",
+      "src_port": 0,
+      "event_type": "alert",
+      "alert": {
+          "severity": 3,
+          "signature_id": 1,
+          "rev": 0,
+          "signature": "",
+          "action": "allowed",
+          "category": ""
+      },
+      "flow_id": 110307405146936,
+      "dest_ip": "10.2.1.120",
+      "proto": "ICMP",
+      "verdict": {
+          "action": "alert"
+      },
+      "icmp_code": 0,
+      "dest_port": 0,
+      "pkt_src": "geneve encapsulation",
+      "timestamp": "2025-03-28T21:20:16.877650+0000",
+      "direction": "to_server"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743198381",
+  "event": {
+      "icmp_type": 8,
+      "src_ip": "43.157.82.161",
+      "src_port": 0,
+      "event_type": "alert",
+      "alert": {
+          "severity": 3,
+          "signature_id": 1,
+          "rev": 0,
+          "signature": "",
+          "action": "allowed",
+          "category": ""
+      },
+      "flow_id": 1617927250263776,
+      "dest_ip": "10.2.1.120",
+      "proto": "ICMP",
+      "verdict": {
+          "action": "alert"
+      },
+      "icmp_code": 0,
+      "dest_port": 0,
+      "pkt_src": "geneve encapsulation",
+      "timestamp": "2025-03-28T21:46:21.966527+0000",
+      "direction": "to_server"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743199011",
+  "event": {
+      "icmp_type": 8,
+      "src_ip": "219.151.22.112",
+      "src_port": 0,
+      "event_type": "alert",
+      "alert": {
+          "severity": 3,
+          "signature_id": 1,
+          "rev": 0,
+          "signature": "",
+          "action": "allowed",
+          "category": ""
+      },
+      "flow_id": 877150988711502,
+      "dest_ip": "10.2.1.120",
+      "proto": "ICMP",
+      "verdict": {
+          "action": "alert"
+      },
+      "icmp_code": 0,
+      "dest_port": 0,
+      "pkt_src": "geneve encapsulation",
+      "timestamp": "2025-03-28T21:56:51.007619+0000",
+      "direction": "to_server"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743192849",
+  "event": {
+      "icmp_type": 8,
+      "src_ip": "172.104.241.110",
+      "src_port": 0,
+      "event_type": "alert",
+      "alert": {
+          "severity": 3,
+          "signature_id": 1,
+          "rev": 0,
+          "signature": "",
+          "action": "allowed",
+          "category": ""
+      },
+      "flow_id": 371641639027208,
+      "dest_ip": "10.2.1.120",
+      "proto": "ICMP",
+      "verdict": {
+          "action": "alert"
+      },
+      "icmp_code": 0,
+      "dest_port": 0,
+      "pkt_src": "geneve encapsulation",
+      "timestamp": "2025-03-28T20:14:09.610817+0000",
+      "direction": "to_server"
+  }
+},{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743193765",
+  "event": {
+      "icmp_type": 8,
+      "src_ip": "205.210.31.137",
+      "src_port": 0,
+      "event_type": "alert",
+      "alert": {
+          "severity": 3,
+          "signature_id": 1,
+          "rev": 0,
+          "signature": "",
+          "action": "allowed",
+          "category": ""
+      },
+      "flow_id": 1434920622358325,
+      "dest_ip": "10.2.1.120",
+      "proto": "ICMP",
+      "verdict": {
+          "action": "alert"
+      },
+      "icmp_code": 0,
+      "dest_port": 0,
+      "pkt_src": "geneve encapsulation",
+      "timestamp": "2025-03-28T20:29:25.661773+0000",
+      "direction": "to_server"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743194151",
+  "event": {
+      "icmp_type": 8,
+      "src_ip": "185.148.14.161",
+      "src_port": 0,
+      "event_type": "alert",
+      "alert": {
+          "severity": 3,
+          "signature_id": 1,
+          "rev": 0,
+          "signature": "",
+          "action": "allowed",
+          "category": ""
+      },
+      "flow_id": 2065851785747618,
+      "dest_ip": "10.2.1.120",
+      "proto": "ICMP",
+      "verdict": {
+          "action": "alert"
+      },
+      "icmp_code": 0,
+      "dest_port": 0,
+      "pkt_src": "geneve encapsulation",
+      "timestamp": "2025-03-28T20:35:51.284385+0000",
+      "direction": "to_server"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743195257",
+  "event": {
+      "icmp_type": 8,
+      "src_ip": "34.251.77.48",
+      "src_port": 0,
+      "event_type": "alert",
+      "alert": {
+          "severity": 3,
+          "signature_id": 1,
+          "rev": 0,
+          "signature": "",
+          "action": "allowed",
+          "category": ""
+      },
+      "flow_id": 436798691595276,
+      "dest_ip": "10.2.1.120",
+      "proto": "ICMP",
+      "verdict": {
+          "action": "alert"
+      },
+      "icmp_code": 0,
+      "dest_port": 0,
+      "pkt_src": "geneve encapsulation",
+      "timestamp": "2025-03-28T20:54:17.757060+0000",
+      "direction": "to_server"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743188506",
+  "event": {
+      "icmp_type": 8,
+      "src_ip": "113.6.251.19",
+      "src_port": 0,
+      "event_type": "alert",
+      "alert": {
+          "severity": 3,
+          "signature_id": 1,
+          "rev": 0,
+          "signature": "",
+          "action": "allowed",
+          "category": ""
+      },
+      "flow_id": 710517155814768,
+      "dest_ip": "10.2.1.120",
+      "proto": "ICMP",
+      "verdict": {
+          "action": "alert"
+      },
+      "icmp_code": 0,
+      "dest_port": 0,
+      "pkt_src": "geneve encapsulation",
+      "timestamp": "2025-03-28T19:01:46.230966+0000",
+      "direction": "to_server"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743188782",
+  "event": {
+      "icmp_type": 8,
+      "src_ip": "143.244.58.247",
+      "src_port": 0,
+      "event_type": "alert",
+      "alert": {
+          "severity": 3,
+          "signature_id": 1,
+          "rev": 0,
+          "signature": "",
+          "action": "allowed",
+          "category": ""
+      },
+      "flow_id": 1793775055925965,
+      "dest_ip": "10.2.1.120",
+      "proto": "ICMP",
+      "verdict": {
+          "action": "alert"
+      },
+      "icmp_code": 0,
+      "dest_port": 0,
+      "pkt_src": "geneve encapsulation",
+      "timestamp": "2025-03-28T19:06:22.679789+0000",
+      "direction": "to_server"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743191029",
+  "event": {
+      "icmp_type": 8,
+      "src_ip": "112.48.131.106",
+      "src_port": 0,
+      "event_type": "alert",
+      "alert": {
+          "severity": 3,
+          "signature_id": 1,
+          "rev": 0,
+          "signature": "",
+          "action": "allowed",
+          "category": ""
+      },
+      "flow_id": 1665060777342782,
+      "dest_ip": "10.2.1.120",
+      "proto": "ICMP",
+      "verdict": {
+          "action": "alert"
+      },
+      "icmp_code": 0,
+      "dest_port": 0,
+      "pkt_src": "geneve encapsulation",
+      "timestamp": "2025-03-28T19:43:49.059997+0000",
+      "direction": "to_server"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743191456",
+  "event": {
+      "icmp_type": 8,
+      "src_ip": "35.172.219.243",
+      "src_port": 0,
+      "event_type": "alert",
+      "alert": {
+          "severity": 3,
+          "signature_id": 1,
+          "rev": 0,
+          "signature": "",
+          "action": "allowed",
+          "category": ""
+      },
+      "flow_id": 166635255594225,
+      "dest_ip": "10.2.1.120",
+      "proto": "ICMP",
+      "verdict": {
+          "action": "alert"
+      },
+      "icmp_code": 0,
+      "dest_port": 0,
+      "pkt_src": "geneve encapsulation",
+      "timestamp": "2025-03-28T19:50:56.890765+0000",
+      "direction": "to_server"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743191546",
+  "event": {
+      "icmp_type": 8,
+      "src_ip": "168.138.77.168",
+      "src_port": 0,
+      "event_type": "alert",
+      "alert": {
+          "severity": 3,
+          "signature_id": 1,
+          "rev": 0,
+          "signature": "",
+          "action": "allowed",
+          "category": ""
+      },
+      "flow_id": 646269839492608,
+      "dest_ip": "10.2.1.120",
+      "proto": "ICMP",
+      "verdict": {
+          "action": "alert"
+      },
+      "icmp_code": 0,
+      "dest_port": 0,
+      "pkt_src": "geneve encapsulation",
+      "timestamp": "2025-03-28T19:52:26.871367+0000",
+      "direction": "to_server"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743191911",
+  "event": {
+      "tx_id": 0,
+      "app_proto": "tls",
+      "src_ip": "10.2.1.120",
+      "src_port": 53010,
+      "event_type": "alert",
+      "alert": {
+          "severity": 1,
+          "signature_id": 5,
+          "rev": 1,
+          "signature": "not matching any TLS allowlisted FQDNs",
+          "action": "blocked",
+          "category": ""
+      },
+      "flow_id": 2065612459938833,
+      "dest_ip": "3.5.20.45",
+      "proto": "TCP",
+      "verdict": {
+          "action": "drop"
+      },
+      "tls": {
+          "sni": "s3.us-east-1.amazonaws.com",
+          "version": "UNDETERMINED"
+      },
+      "dest_port": 443,
+      "pkt_src": "geneve encapsulation",
+      "timestamp": "2025-03-28T19:58:31.026915+0000",
+      "direction": "to_server"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743184911",
+  "event": {
+      "icmp_type": 8,
+      "src_ip": "85.90.246.159",
+      "src_port": 0,
+      "event_type": "alert",
+      "alert": {
+          "severity": 3,
+          "signature_id": 1,
+          "rev": 0,
+          "signature": "",
+          "action": "allowed",
+          "category": ""
+      },
+      "flow_id": 2207711393675087,
+      "dest_ip": "10.2.1.120",
+      "proto": "ICMP",
+      "verdict": {
+          "action": "alert"
+      },
+      "icmp_code": 0,
+      "dest_port": 0,
+      "pkt_src": "geneve encapsulation",
+      "timestamp": "2025-03-28T18:01:51.055270+0000",
+      "direction": "to_server"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743185245",
+  "event": {
+      "icmp_type": 8,
+      "src_ip": "52.90.182.84",
+      "src_port": 0,
+      "event_type": "alert",
+      "alert": {
+          "severity": 3,
+          "signature_id": 1,
+          "rev": 0,
+          "signature": "",
+          "action": "allowed",
+          "category": ""
+      },
+      "flow_id": 1439574762347518,
+      "dest_ip": "10.2.1.120",
+      "proto": "ICMP",
+      "verdict": {
+          "action": "alert"
+      },
+      "icmp_code": 0,
+      "dest_port": 0,
+      "pkt_src": "geneve encapsulation",
+      "timestamp": "2025-03-28T18:07:25.793929+0000",
+      "direction": "to_server"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743185956",
+  "event": {
+      "icmp_type": 8,
+      "src_ip": "43.156.27.212",
+      "src_port": 0,
+      "event_type": "alert",
+      "alert": {
+          "severity": 3,
+          "signature_id": 1,
+          "rev": 0,
+          "signature": "",
+          "action": "allowed",
+          "category": ""
+      },
+      "flow_id": 1280289582154336,
+      "dest_ip": "10.2.1.120",
+      "proto": "ICMP",
+      "verdict": {
+          "action": "alert"
+      },
+      "icmp_code": 0,
+      "dest_port": 0,
+      "pkt_src": "geneve encapsulation",
+      "timestamp": "2025-03-28T18:19:16.363626+0000",
+      "direction": "to_server"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743186491",
+  "event": {
+      "icmp_type": 8,
+      "src_ip": "185.1.48.34",
+      "src_port": 0,
+      "event_type": "alert",
+      "alert": {
+          "severity": 3,
+          "signature_id": 1,
+          "rev": 0,
+          "signature": "",
+          "action": "allowed",
+          "category": ""
+      },
+      "flow_id": 882055939560597,
+      "dest_ip": "10.2.1.120",
+      "proto": "ICMP",
+      "verdict": {
+          "action": "alert"
+      },
+      "icmp_code": 0,
+      "dest_port": 0,
+      "pkt_src": "geneve encapsulation",
+      "timestamp": "2025-03-28T18:28:11.926265+0000",
+      "direction": "to_server"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743186611",
+  "event": {
+      "icmp_type": 8,
+      "src_ip": "52.81.183.186",
+      "src_port": 0,
+      "event_type": "alert",
+      "alert": {
+          "severity": 3,
+          "signature_id": 1,
+          "rev": 0,
+          "signature": "",
+          "action": "allowed",
+          "category": ""
+      },
+      "flow_id": 1109097848307812,
+      "dest_ip": "10.2.1.120",
+      "proto": "ICMP",
+      "verdict": {
+          "action": "alert"
+      },
+      "icmp_code": 0,
+      "dest_port": 0,
+      "pkt_src": "geneve encapsulation",
+      "timestamp": "2025-03-28T18:30:11.913591+0000",
+      "direction": "to_server"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743186877",
+  "event": {
+      "icmp_type": 8,
+      "src_ip": "34.200.221.110",
+      "src_port": 0,
+      "event_type": "alert",
+      "alert": {
+          "severity": 3,
+          "signature_id": 1,
+          "rev": 0,
+          "signature": "",
+          "action": "allowed",
+          "category": ""
+      },
+      "flow_id": 1613667607439337,
+      "dest_ip": "10.2.1.120",
+      "proto": "ICMP",
+      "verdict": {
+          "action": "alert"
+      },
+      "icmp_code": 0,
+      "dest_port": 0,
+      "pkt_src": "geneve encapsulation",
+      "timestamp": "2025-03-28T18:34:37.113567+0000",
+      "direction": "to_server"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743187010",
+  "event": {
+      "icmp_type": 8,
+      "src_ip": "94.74.67.250",
+      "src_port": 0,
+      "event_type": "alert",
+      "alert": {
+          "severity": 3,
+          "signature_id": 1,
+          "rev": 0,
+          "signature": "",
+          "action": "allowed",
+          "category": ""
+      },
+      "flow_id": 842640723736188,
+      "dest_ip": "10.2.1.120",
+      "proto": "ICMP",
+      "verdict": {
+          "action": "alert"
+      },
+      "icmp_code": 0,
+      "dest_port": 0,
+      "pkt_src": "geneve encapsulation",
+      "timestamp": "2025-03-28T18:36:50.196192+0000",
+      "direction": "to_server"
+  }
+},
+{
+  "firewall_name": "NetworkFirewallSetup-firewall",
+  "availability_zone": "us-east-1a",
+  "event_timestamp": "1743187871",
+  "event": {
+      "icmp_type": 8,
+      "src_ip": "195.169.125.250",
+      "src_port": 0,
+      "event_type": "alert",
+      "alert": {
+          "severity": 3,
+          "signature_id": 1,
+          "rev": 0,
+          "signature": "",
+          "action": "allowed",
+          "category": ""
+      },
+      "flow_id": 2106084127800914,
+      "dest_ip": "10.2.1.120",
+      "proto": "ICMP",
+      "verdict": {
+          "action": "alert"
+      },
+      "icmp_code": 0,
+      "dest_port": 0,
+      "pkt_src": "geneve encapsulation",
+      "timestamp": "2025-03-28T18:51:11.883576+0000",
+      "direction": "to_server"
+  }
+}
+]

@@ -1,0 +1,28 @@
+{
+    "firewall_name": "use1-fw",
+    "availability_zone": "us-east-1a",
+    "event_timestamp": "1740407994",
+    "event": {
+        "src_ip": "10.170.18.235",
+        "src_port": 60448,
+        "event_type": "alert",
+        "alert": {
+            "severity": 3,
+            "signature_id": 4,
+            "rev": 0,
+            "signature": "aws:alert_established action",
+            "action": "blocked",
+            "category": ""
+        },
+        "flow_id": 16402963969408,
+        "dest_ip": "8.8.8.8",
+        "proto": "TCP",
+        "verdict": {
+            "action": "drop"
+        },
+        "dest_port": 443,
+        "pkt_src": "geneve encapsulation",
+        "timestamp": "2025-02-24T14:39:54.227071+0000",
+        "direction": "to_server"
+    }
+}

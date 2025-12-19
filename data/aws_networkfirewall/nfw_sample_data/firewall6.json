@@ -1,0 +1,30 @@
+{
+    "firewall_name": "use1-fw",
+    "availability_zone": "us-east-1a",
+    "event_timestamp": "1740407403",
+    "event": {
+        "icmp_type": 8,
+        "src_ip": "10.170.18.235",
+        "src_port": 0,
+        "event_type": "alert",
+        "alert": {
+            "severity": 3,
+            "signature_id": 2,
+            "rev": 0,
+            "signature": "aws:alert_established action",
+            "action": "blocked",
+            "category": ""
+        },
+        "flow_id": 955854500244454,
+        "dest_ip": "8.8.8.8",
+        "proto": "ICMP",
+        "verdict": {
+            "action": "drop"
+        },
+        "icmp_code": 0,
+        "dest_port": 0,
+        "pkt_src": "geneve encapsulation",
+        "timestamp": "2025-02-24T14:30:03.681304+0000",
+        "direction": "to_server"
+    }
+}

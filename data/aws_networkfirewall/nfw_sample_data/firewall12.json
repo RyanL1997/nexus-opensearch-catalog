@@ -1,0 +1,32 @@
+{
+    "firewall_name": "use1-fw",
+    "availability_zone": "us-east-1a",
+    "event_timestamp": "1740407584",
+    "event": {
+        "tcp": {
+            "tcp_flags": "1b",
+            "syn": true,
+            "fin": true,
+            "psh": true,
+            "ack": true
+        },
+        "app_proto": "tls",
+        "src_ip": "10.170.18.235",
+        "src_port": 36434,
+        "netflow": {
+            "pkts": 23,
+            "bytes": 6482,
+            "start": "2025-02-24T14:30:57.928446+0000",
+            "end": "2025-02-24T14:32:01.964015+0000",
+            "age": 64,
+            "min_ttl": 63,
+            "max_ttl": 63
+        },
+        "event_type": "netflow",
+        "flow_id": 328474246651493,
+        "dest_ip": "54.146.42.172",
+        "proto": "TCP",
+        "dest_port": 443,
+        "timestamp": "2025-02-24T14:33:04.190717+0000"
+    }
+}

@@ -1,0 +1,25 @@
+{
+    "firewall_name": "use1-fw",
+    "availability_zone": "us-east-1a",
+    "event_timestamp": "1740407532",
+    "event": {
+        "src_ip": "10.170.18.235",
+        "icmp_type": 8,
+        "netflow": {
+            "pkts": 9,
+            "bytes": 756,
+            "start": "2025-02-24T14:30:03.681304+0000",
+            "end": "2025-02-24T14:30:11.857480+0000",
+            "age": 8,
+            "min_ttl": 63,
+            "max_ttl": 63
+        },
+        "event_type": "netflow",
+        "flow_id": 955854500244454,
+        "dest_ip": "8.8.8.8",
+        "proto": "ICMP",
+        "icmp_code": 0,
+        "app_proto": "unknown",
+        "timestamp": "2025-02-24T14:32:12.475216+0000"
+    }
+}

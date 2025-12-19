@@ -1,0 +1,37 @@
+{
+    "firewall_name": "use1-fw",
+    "availability_zone": "us-east-1a",
+    "event_timestamp": "1740407448",
+    "event": {
+        "app_proto": "http",
+        "src_ip": "10.170.18.235",
+        "src_port": 59336,
+        "event_type": "alert",
+        "alert": {
+            "severity": 3,
+            "signature_id": 4,
+            "rev": 0,
+            "signature": "aws:alert_established action",
+            "action": "blocked",
+            "category": ""
+        },
+        "flow_id": 278710129222792,
+        "dest_ip": "54.242.115.112",
+        "proto": "TCP",
+        "verdict": {
+            "action": "drop"
+        },
+        "http": {
+            "hostname": "checkip.amazonaws.com",
+            "url": "/",
+            "http_user_agent": "curl/8.5.0",
+            "http_method": "GET",
+            "protocol": "HTTP/1.1",
+            "length": 0
+        },
+        "dest_port": 80,
+        "pkt_src": "geneve encapsulation",
+        "timestamp": "2025-02-24T14:30:48.723575+0000",
+        "direction": "to_server"
+    }
+}
